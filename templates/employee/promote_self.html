@@ -1,0 +1,60 @@
+{% extends 'layout/base.html' %}
+{% block title %}Promote Myself – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employee.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-star me-2 text-warning"></i>Promote Myself to Employers</h4>
+  </div>
+  <p class="text-muted">Create a talent profile visible to all employers in the Talent Pool.</p>
+
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form method="POST">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Headline *</label>
+              <input type="text" name="headline" class="form-control" required
+                     value="{{ offer.headline if offer else '' }}"
+                     placeholder="e.g. Experienced Software Engineer | 5 years | Colombo">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Skills / Tags <small class="text-muted">(comma-separated)</small></label>
+              <input type="text" name="skills_tags" class="form-control"
+                     value="{{ offer.skills_tags if offer else '' }}"
+                     placeholder="Python, Flask, MySQL, REST API">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Years of Experience</label>
+                <input type="number" name="experience_years" class="form-control" min="0" max="50"
+                       value="{{ offer.experience_years if offer else 0 }}">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Expected Monthly Salary (LKR)</label>
+                <input type="number" name="expected_salary" class="form-control" min="0" step="1000"
+                       value="{{ offer.expected_salary if offer else '' }}" placeholder="e.g. 80000">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">About Me</label>
+              <textarea name="description" class="form-control" rows="5"
+                        placeholder="Brief introduction about yourself, your experience, and what you're looking for…">{{ offer.description if offer else '' }}</textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Profile Expiry Date *</label>
+              <input type="date" name="expiry_date" class="form-control" required
+                     value="{{ offer.expiry_date if offer else '' }}">
+              <div class="form-text">Your profile will be hidden from employers after this date.</div>
+            </div>
+            <button type="submit" class="btn btn-warning fw-bold w-100">
+              <i class="fas fa-star me-2"></i>{{ 'Update' if offer else 'Go Live' }} Talent Profile
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

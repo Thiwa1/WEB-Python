@@ -1,0 +1,44 @@
+{% extends 'layout/base.html' %}
+{% block title %}Paper Advertising – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <i class="fas fa-newspaper text-success fa-4x mb-3"></i>
+      <h2 class="fw-bold">Newspaper Advertising</h2>
+      <p class="lead text-muted">Reach candidates beyond digital — place your job ad in leading newspapers.</p>
+      <div class="row g-3 my-4 text-start">
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100 p-3 text-center">
+            <i class="fas fa-pen-nib text-primary fa-2x mb-2"></i>
+            <h6 class="fw-bold">Submit Ad Text</h6>
+            <p class="small text-muted">Write your ad content and we'll format it for publication.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100 p-3 text-center">
+            <i class="fas fa-money-check-alt text-warning fa-2x mb-2"></i>
+            <h6 class="fw-bold">Pay Online</h6>
+            <p class="small text-muted">Upload payment slip for quick processing.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card border-0 shadow-sm h-100 p-3 text-center">
+            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
+            <h6 class="fw-bold">Get Published</h6>
+            <p class="small text-muted">Our team reviews and publishes in the next available edition.</p>
+          </div>
+        </div>
+      </div>
+      {% if session.user_id and session.user_type | lower == 'employer' %}
+      <a href="{{ url_for('employer.submit_paper_ad') }}" class="btn btn-success btn-lg fw-bold">
+        <i class="fas fa-plus me-2"></i>Submit a Paper Ad
+      </a>
+      {% else %}
+      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg fw-bold me-2">Register as Employer</a>
+      <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Login</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

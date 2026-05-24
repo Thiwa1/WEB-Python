@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
+      <i class="fas fa-briefcase me-2"></i>JobPortal Pro
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Jobs</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.paper_ads') }}">Paper Ads</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.policies') }}">Policies</a></li>
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if session.user_id %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+              <i class="fas fa-user-circle me-1"></i>{{ session.full_name }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              {% set role = session.user_type | lower %}
+              {% if role == 'employer' %}
+                <li><a class="dropdown-item" href="{{ url_for('employer.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('employer.post_job') }}"><i class="fas fa-plus me-2"></i>Post a Job</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('employer.profile') }}"><i class="fas fa-building me-2"></i>Company Profile</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('employer.billing') }}"><i class="fas fa-credit-card me-2"></i>Billing</a></li>
+              {% elif role in ('employee','seeker','candidate') %}
+                <li><a class="dropdown-item" href="{{ url_for('employee.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('employee.my_applications') }}"><i class="fas fa-file-alt me-2"></i>My Applications</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('employee.edit_profile') }}"><i class="fas fa-user-edit me-2"></i>Edit Profile</a></li>
+              {% elif role in ('admin','paperadmin') %}
+                <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt me-2"></i>Admin Panel</a></li>
+              {% endif %}
+              {% if session.is_paper_admin %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ url_for('admin.paper_ads') }}"><i class="fas fa-newspaper me-2"></i>Paper Ads</a></li>
+              {% endif %}
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+          <li class="nav-item"><a class="btn btn-light btn-sm ms-2" href="{{ url_for('auth.register') }}">Register</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

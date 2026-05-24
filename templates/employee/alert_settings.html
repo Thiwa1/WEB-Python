@@ -1,0 +1,96 @@
+{% extends 'layout/base.html' %}
+{% block title %}Job Alerts – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employee.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-bell me-2 text-success"></i>Job Alerts</h4>
+  </div>
+  <p class="text-muted">Get SMS notifications when jobs matching your preferences are posted.</p>
+
+  <!-- Add Alert -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-bold border-0 pt-3">Add New Alert</div>
+    <div class="card-body">
+      <form method="POST" class="row g-3 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">District</label>
+          <select name="district" class="form-select">
+            <option value="">Any District</option>
+            {% for d in districts %}
+            <option value="{{ d.District_name }}">{{ d.District_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">City</label>
+          <select name="city" class="form-select" id="city-sel">
+            <option value="">Any City</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Job Category</label>
+          <select name="job_category" class="form-select">
+            <option value="">Any Category</option>
+            {% for c in categories %}
+            <option value="{{ c.Description }}">{{ c.Description }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-3">
+          <button type="submit" class="btn btn-success w-100">
+            <i class="fas fa-plus me-2"></i>Add Alert
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Active Alerts -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-bold border-0 pt-3">Active Alerts ({{ alerts|length }})</div>
+    <div class="card-body p-0">
+      {% if alerts %}
+      <div class="list-group list-group-flush">
+        {% for alert in alerts %}
+        <div class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <i class="fas fa-bell text-success me-2"></i>
+            <strong>{{ alert.district or 'Any District' }}</strong>
+            {% if alert.city %} · {{ alert.city }}{% endif %}
+            {% if alert.job_category %} · {{ alert.job_category }}{% endif %}
+            <span class="badge bg-{{ 'success' if alert.active else 'secondary' }} ms-2">{{ 'Active' if alert.active else 'Paused' }}</span>
+          </div>
+          <form method="POST" action="{{ url_for('employee.delete_alert', alert_id=alert.id) }}"
+                onsubmit="return confirm('Remove this alert?')">
+            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center text-muted py-4">
+        <i class="fas fa-bell-slash fa-2x mb-2"></i>
+        <p>No alerts set. Add one above to get notified about new jobs.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelector('select[name="district"]').addEventListener('change', function() {
+  const sel = document.getElementById('city-sel');
+  sel.innerHTML = '<option value="">Any City</option>';
+  if (!this.value) return;
+  fetch(`/get-cities?district=${encodeURIComponent(this.value)}`)
+    .then(r => r.json())
+    .then(cities => cities.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.name; o.textContent = c.name;
+      sel.appendChild(o);
+    }));
+});
+</script>
+{% endblock %}

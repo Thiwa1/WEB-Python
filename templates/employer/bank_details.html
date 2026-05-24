@@ -1,0 +1,26 @@
+{% extends 'layout/base.html' %}
+{% block title %}Bank Details – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employer.billing') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0">Bank Transfer Details</h4>
+  </div>
+  {% if banks %}
+  <div class="row g-3">
+    {% for bank in banks %}
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm p-3">
+        <h6 class="fw-bold text-primary">{{ bank.bank_name }}</h6>
+        <div><strong>A/C:</strong> {{ bank.account_number }}</div>
+        {% if bank.branch_name %}<div><strong>Branch:</strong> {{ bank.branch_name }}</div>{% endif %}
+        {% if bank.branch_code %}<div><strong>Code:</strong> {{ bank.branch_code }}</div>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info">No bank accounts configured. Contact admin for payment details.</div>
+  {% endif %}
+</div>
+{% endblock %}

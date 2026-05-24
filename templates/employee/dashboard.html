@@ -1,0 +1,104 @@
+{% extends 'layout/base.html' %}
+{% block title %}Job Seeker Dashboard – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container-fluid py-4 px-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold mb-0"><i class="fas fa-tachometer-alt me-2 text-primary"></i>My Dashboard</h4>
+    <a href="{{ url_for('employee.browse_jobs') }}" class="btn btn-primary">
+      <i class="fas fa-search me-2"></i>Browse Jobs
+    </a>
+  </div>
+
+  <!-- Profile Completion Banner -->
+  {% if not profile.cv_path %}
+  <div class="alert alert-warning d-flex align-items-center gap-2 mb-4">
+    <i class="fas fa-exclamation-triangle fa-lg"></i>
+    <div>Complete your profile for faster applications.
+      <a href="{{ url_for('employee.edit_profile') }}" class="alert-link ms-2">Upload CV now →</a>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    {% for label, val, icon, color in [
+        ('Applications Sent', applications|length, 'fa-paper-plane', 'primary'),
+        ('Active Jobs', active_jobs_count, 'fa-briefcase', 'success'),
+        ('Documents', '–', 'fa-folder', 'info'),
+        ('Talent Profile', 'Live' if talent_offer else 'Not set', 'fa-star', 'warning')] %}
+    <div class="col-6 col-md-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-{{ color }} bg-opacity-10 p-3">
+            <i class="fas {{ icon }} text-{{ color }} fa-lg"></i>
+          </div>
+          <div>
+            <div class="fs-4 fw-bold">{{ val }}</div>
+            <div class="small text-muted">{{ label }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Quick Links -->
+  <div class="row g-3 mb-4">
+    {% for label, url, icon, color in [
+        ('Browse Jobs', url_for('employee.browse_jobs'), 'fa-search', 'primary'),
+        ('My Applications', url_for('employee.my_applications'), 'fa-file-alt', 'info'),
+        ('Edit Profile', url_for('employee.edit_profile'), 'fa-user-edit', 'secondary'),
+        ('My Documents', url_for('employee.manage_documents'), 'fa-folder-open', 'warning'),
+        ('Job Alerts', url_for('employee.alert_settings'), 'fa-bell', 'success'),
+        ('Promote Myself', url_for('employee.promote_self'), 'fa-star', 'danger')] %}
+    <div class="col-6 col-md-2">
+      <a href="{{ url }}" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 d-flex flex-column align-items-center justify-content-center">
+        <i class="fas {{ icon }} text-{{ color }} fa-2x mb-2"></i>
+        <span class="small fw-semibold text-dark">{{ label }}</span>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Recent Applications -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-bold border-0">
+      <i class="fas fa-paper-plane me-2 text-primary"></i>Recent Applications
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+          <thead class="table-light">
+            <tr><th>Job Title</th><th>Company District</th><th>Applied</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+          {% for app, job in applications %}
+            <tr>
+              <td class="fw-semibold">
+                <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="text-decoration-none">{{ job.Job_role }}</a>
+              </td>
+              <td>{{ job.District }}</td>
+              <td>{{ app.applied_date.strftime('%d %b %Y') if app.applied_date else '–' }}</td>
+              <td>
+                <span class="badge bg-{{ 'success' if app.application_status=='Accepted' else 'danger' if app.application_status=='Rejected' else 'warning text-dark' if app.application_status=='Shortlisted' else 'secondary' }}">
+                  {{ app.application_status }}
+                </span>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="4" class="text-center text-muted py-4">
+              No applications yet. <a href="{{ url_for('employee.browse_jobs') }}">Browse jobs</a>
+            </td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if applications %}
+    <div class="card-footer bg-white text-end">
+      <a href="{{ url_for('employee.my_applications') }}" class="btn btn-sm btn-outline-primary">View All →</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'layout/base.html' %}
+{% block title %}Manage Paper Ads – Admin{% endblock %}
+{% block content %}
+<div class="container-fluid py-4 px-4">
+  <h4 class="fw-bold mb-4"><i class="fas fa-newspaper me-2 text-info"></i>Paper Ads Management</h4>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr><th>#</th><th>Employer</th><th>Ad Text</th><th>Contact</th><th>Slip</th><th>Status</th><th>Submitted</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+          {% for ad, employer, user in ads %}
+            <tr>
+              <td>{{ ad.id }}</td>
+              <td class="fw-semibold">{{ employer.employer_name or user.full_name }}</td>
+              <td style="max-width:250px;">
+                <div class="text-truncate small" title="{{ ad.ad_text }}">{{ ad.ad_text[:80] }}{% if ad.ad_text|length > 80 %}…{% endif %}</div>
+              </td>
+              <td class="small">{{ ad.contact_info or '–' }}</td>
+              <td>
+                {% if ad.slip_path %}
+                <a href="{{ url_for('static', filename=ad.slip_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fas fa-image"></i></a>
+                {% else %}–{% endif %}
+              </td>
+              <td>
+                <span class="badge bg-{{ 'success' if ad.status=='Approved' else 'danger' if ad.status=='Rejected' else 'warning text-dark' }}">
+                  {{ ad.status }}
+                </span>
+              </td>
+              <td class="small">{{ ad.submitted_at.strftime('%d %b %Y') if ad.submitted_at else '–' }}</td>
+              <td>
+                {% if ad.status == 'Pending' %}
+                <form method="POST" action="{{ url_for('admin.approve_paper_ad', ad_id=ad.id) }}" class="d-inline">
+                  <button class="btn btn-sm btn-success me-1"><i class="fas fa-check"></i></button>
+                </form>
+                <form method="POST" action="{{ url_for('admin.reject_paper_ad', ad_id=ad.id) }}" class="d-inline">
+                  <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="8" class="text-center text-muted py-4">No paper ads submitted yet.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'layout/base.html' %}
+{% block title %}Register – JobPortal Pro{% endblock %}
+{% block head %}
+{% if recaptcha_site_key %}
+<script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+      <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <i class="fas fa-user-plus text-primary fa-3x mb-2"></i>
+            <h4 class="fw-bold">Create Account</h4>
+          </div>
+          <form method="POST" id="reg-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Account Type</label>
+              <select name="user_type" class="form-select" id="user-type-select" required>
+                <option value="">– Select –</option>
+                {% for ut in user_types %}
+                <option value="{{ ut.user_type_select }}">{{ ut.user_type_select | capitalize }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div id="company-name-field" class="mb-3" style="display:none;">
+              <label class="form-label small fw-semibold">Company Name</label>
+              <input type="text" name="company_name" class="form-control" placeholder="Your company name">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Full Name</label>
+              <input type="text" name="full_name" class="form-control" required>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Email</label>
+                <input type="email" name="user_email" class="form-control" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Password</label>
+                <input type="password" name="user_password" class="form-control" minlength="8" required>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Date of Birth</label>
+                <input type="date" name="Birthday" class="form-control" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Gender</label>
+                <select name="male_female" class="form-select" required>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Not Specified">Prefer not to say</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">Mobile Number</label>
+                <input type="tel" name="mobile_number" class="form-control" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label small fw-semibold">WhatsApp Number</label>
+                <input type="tel" name="WhatsApp_number" class="form-control" placeholder="Same as mobile if same">
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold">
+              <i class="fas fa-user-plus me-2"></i>Create Account
+            </button>
+          </form>
+          <p class="text-center mt-3 small text-muted">
+            Already have an account? <a href="{{ url_for('auth.login') }}" class="fw-semibold">Sign In</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('user-type-select').addEventListener('change', function() {
+  document.getElementById('company-name-field').style.display =
+    this.value.toLowerCase() === 'employer' ? 'block' : 'none';
+});
+{% if recaptcha_site_key %}
+document.getElementById('reg-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  grecaptcha.ready(function() {
+    grecaptcha.execute('{{ recaptcha_site_key }}', {action:'register'}).then(function(token) {
+      document.getElementById('recaptcha_token').value = token;
+      document.getElementById('reg-form').submit();
+    });
+  });
+});
+{% endif %}
+</script>
+{% endblock %}

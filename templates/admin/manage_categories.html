@@ -1,0 +1,77 @@
+{% extends 'layout/base.html' %}
+{% block title %}Manage Categories – Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-tags me-2 text-info"></i>Categories &amp; Districts</h4>
+  </div>
+  <div class="row g-4">
+    <!-- Job Categories -->
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white fw-bold border-0 pt-3">Job Categories</div>
+        <div class="card-body">
+          <form method="POST" class="mb-3">
+            <input type="hidden" name="action" value="add_category">
+            <div class="input-group">
+              <input type="text" name="description" class="form-control" placeholder="New category…" required>
+              <button class="btn btn-primary"><i class="fas fa-plus"></i></button>
+            </div>
+          </form>
+          <ul class="list-group list-group-flush">
+          {% for cat in categories %}
+            <li class="list-group-item py-2 small">
+              <i class="fas fa-tag me-2 text-muted"></i>{{ cat.Description }}
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted small">No categories yet.</li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Districts -->
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white fw-bold border-0 pt-3">Districts</div>
+        <div class="card-body">
+          <form method="POST" class="mb-3">
+            <input type="hidden" name="action" value="add_district">
+            <div class="input-group">
+              <input type="text" name="district_name" class="form-control" placeholder="New district…" required>
+              <button class="btn btn-primary"><i class="fas fa-plus"></i></button>
+            </div>
+          </form>
+          <ul class="list-group list-group-flush">
+          {% for d in districts %}
+            <li class="list-group-item py-2 small">
+              <i class="fas fa-map-marker-alt me-2 text-muted"></i>{{ d.District_name }}
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted small">No districts yet.</li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Industries -->
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white fw-bold border-0 pt-3">Industries</div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+          {% for ind in industries %}
+            <li class="list-group-item py-2 small">
+              <i class="fas fa-industry me-2 text-muted"></i>{{ ind.Industry_name }}
+            </li>
+          {% else %}
+            <li class="list-group-item text-muted small">No industries yet.</li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

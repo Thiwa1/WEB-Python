@@ -1,0 +1,128 @@
+{% extends 'layout/base.html' %}
+{% block title %}Edit Job – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0">Edit Job: {{ job.Job_role }}</h4>
+  </div>
+  <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>Editing will reset approval status. The job will be re-reviewed.</div>
+  <form method="POST" enctype="multipart/form-data">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Job Title *</label>
+              <input type="text" name="Job_role" class="form-control" value="{{ job.Job_role }}" required>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Job Type</label>
+                <select name="job_type" class="form-select">
+                  {% for t in ['Full Time','Part Time','Online','School Leaver'] %}
+                  <option value="{{ t }}" {% if job.job_type == t %}selected{% endif %}>{{ t }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Category</label>
+                <select name="Job_category" class="form-select">
+                  <option value="">– Select –</option>
+                  {% for c in categories %}
+                  <option value="{{ c.Description }}" {% if job.Job_category == c.Description %}selected{% endif %}>{{ c.Description }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Industry</label>
+              <select name="Industry" class="form-select">
+                <option value="">– Select –</option>
+                {% for i in industries %}
+                <option value="{{ i.Industry_name }}" {% if job.Industry == i.Industry_name %}selected{% endif %}>{{ i.Industry_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">District</label>
+                <select name="District" class="form-select" id="district-sel">
+                  <option value="">– Select –</option>
+                  {% for d in districts %}
+                  <option value="{{ d.District_name }}" {% if job.District == d.District_name %}selected{% endif %}>{{ d.District_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">City</label>
+                <select name="City" class="form-select" id="city-sel">
+                  {% if job.City %}<option value="{{ job.City }}" selected>{{ job.City }}</option>{% endif %}
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Closing Date *</label>
+              <input type="date" name="Closing_date" class="form-control" value="{{ job.Closing_date }}" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Job Description *</label>
+              <textarea name="job_description" class="form-control" rows="8" required>{{ job.job_description }}</textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Replace Job Banner <small class="text-muted">(leave blank to keep existing)</small></label>
+              {% if job.img_path %}
+              <div class="mb-2"><img src="{{ url_for('static', filename=job.img_path) }}" style="max-height:100px;" class="rounded"></div>
+              {% endif %}
+              <input type="file" name="Img" class="form-control" accept="image/*">
+            </div>
+            <div class="mt-3">
+              <h6 class="fw-semibold">Application Methods</h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="Apply_by_system" value="1" {% if job.Apply_by_system %}checked{% endif %}>
+                <label class="form-check-label">Via portal</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="Apply_by_email" value="1" {% if job.Apply_by_email %}checked{% endif %}>
+                <label class="form-check-label">Via Email</label>
+              </div>
+              <input type="email" name="Apply_by_email_address" class="form-control mb-2" value="{{ job.Apply_by_email_address or '' }}" placeholder="HR email">
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="apply_WhatsApp" value="1" {% if job.apply_WhatsApp %}checked{% endif %}>
+                <label class="form-check-label">Via WhatsApp</label>
+              </div>
+              <input type="tel" name="apply_WhatsApp_No" class="form-control" value="{{ job.apply_WhatsApp_No or '' }}" placeholder="WhatsApp number">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <button type="submit" class="btn btn-primary w-100 fw-bold">
+              <i class="fas fa-save me-2"></i>Save Changes
+            </button>
+            <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.getElementById('district-sel').addEventListener('change', function() {
+  const cityEl = document.getElementById('city-sel');
+  cityEl.innerHTML = '';
+  if (!this.value) return;
+  fetch(`/get-cities?district=${encodeURIComponent(this.value)}`)
+    .then(r => r.json())
+    .then(cities => cities.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.name; o.textContent = c.name;
+      cityEl.appendChild(o);
+    }));
+});
+</script>
+{% endblock %}

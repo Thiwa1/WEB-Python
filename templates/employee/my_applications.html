@@ -1,0 +1,48 @@
+{% extends 'layout/base.html' %}
+{% block title %}My Applications – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employee.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-file-alt me-2 text-primary"></i>My Applications</h4>
+  </div>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr><th>Job Title</th><th>Type</th><th>Location</th><th>Applied</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+          {% for app, job in applications %}
+            <tr>
+              <td class="fw-semibold">
+                <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="text-decoration-none">{{ job.Job_role }}</a>
+              </td>
+              <td><span class="badge bg-secondary">{{ job.job_type }}</span></td>
+              <td>{{ job.District }}</td>
+              <td>{{ app.applied_date.strftime('%d %b %Y') if app.applied_date else '–' }}</td>
+              <td>
+                <span class="badge bg-{{ 'success' if app.application_status=='Accepted' else 'danger' if app.application_status=='Rejected' else 'info' if app.application_status=='Shortlisted' else 'warning text-dark' }}">
+                  {{ app.application_status }}
+                </span>
+                {% if app.rejection_reason %}
+                <div class="small text-danger mt-1">{{ app.rejection_reason }}</div>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-sm btn-outline-secondary">View Job</a>
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="6" class="text-center text-muted py-4">
+              No applications yet. <a href="{{ url_for('employee.browse_jobs') }}">Browse and apply to jobs</a>
+            </td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

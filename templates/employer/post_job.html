@@ -1,0 +1,183 @@
+{% extends 'layout/base.html' %}
+{% block title %}Post a Job – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employer.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0">Post a New Job</h4>
+  </div>
+  {% if is_promo %}
+  <div class="alert alert-success"><i class="fas fa-gift me-2"></i><strong>Promotional Period Active!</strong> Post your job for free right now.</div>
+  {% endif %}
+
+  <form method="POST" enctype="multipart/form-data">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white fw-bold border-0 pt-3">Job Details</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Job Title *</label>
+              <input type="text" name="Job_role" class="form-control" required placeholder="e.g. Software Engineer">
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Job Type *</label>
+                <select name="job_type" class="form-select" required>
+                  {% for t in ['Full Time','Part Time','Online','School Leaver'] %}
+                  <option value="{{ t }}">{{ t }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Category *</label>
+                <select name="Job_category" class="form-select" required>
+                  <option value="">– Select –</option>
+                  {% for c in categories %}
+                  <option value="{{ c.Description }}">{{ c.Description }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Industry</label>
+              <select name="Industry" class="form-select">
+                <option value="">– Select –</option>
+                {% for i in industries %}
+                <option value="{{ i.Industry_name }}">{{ i.Industry_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Opening Date</label>
+                <input type="date" name="Opening_date" class="form-control">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Closing Date *</label>
+                <input type="date" name="Closing_date" class="form-control" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">District</label>
+                <select name="District" class="form-select" id="district-sel">
+                  <option value="">– Select –</option>
+                  {% for d in districts %}
+                  <option value="{{ d.District_name }}">{{ d.District_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">City</label>
+                <select name="City" class="form-select" id="city-sel">
+                  <option value="">– Select –</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Job Description *</label>
+              <textarea name="job_description" class="form-control" rows="8" required
+                        placeholder="Describe the role, responsibilities, and requirements…"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Job Flyer / Banner <small class="text-muted">(optional, max 2MB)</small></label>
+              <input type="file" name="Img" class="form-control" accept="image/*">
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white fw-bold border-0 pt-3">Application Methods</div>
+          <div class="card-body">
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" name="Apply_by_system" value="1" id="apply-sys" checked>
+              <label class="form-check-label" for="apply-sys">Via this portal (recommended)</label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" name="Apply_by_email" value="1" id="apply-email" onchange="toggleField('email-field',this.checked)">
+              <label class="form-check-label" for="apply-email">Via Email</label>
+            </div>
+            <div id="email-field" style="display:none;" class="mb-3 ms-4">
+              <input type="email" name="Apply_by_email_address" class="form-control" placeholder="hr@company.com">
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input" type="checkbox" name="apply_WhatsApp" value="1" id="apply-wa" onchange="toggleField('wa-field',this.checked)">
+              <label class="form-check-label" for="apply-wa">Via WhatsApp</label>
+            </div>
+            <div id="wa-field" style="display:none;" class="mb-3 ms-4">
+              <input type="tel" name="apply_WhatsApp_No" class="form-control" placeholder="+94771234567">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        {% if not is_promo %}
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-warning text-dark fw-bold border-0 pt-3">
+            <i class="fas fa-credit-card me-2"></i>Payment
+          </div>
+          <div class="card-body">
+            {% if price_settings %}
+            <p class="small text-muted">Pricing (per ad unit):</p>
+            <ul class="list-unstyled small">
+              {% for ps in price_settings %}
+              <li>{{ ps.Unit_of_add }} unit(s): <strong>LKR {{ "{:,.0f}".format(ps.selling_price) }}</strong></li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            {% if banks %}
+            <p class="small fw-semibold mb-1">Bank Transfer Details:</p>
+            {% for bank in banks %}
+            <div class="bg-light rounded p-2 mb-2 small">
+              <div class="fw-semibold">{{ bank.bank_name }}</div>
+              <div>A/C: {{ bank.account_number }}</div>
+              {% if bank.branch_name %}<div>Branch: {{ bank.branch_name }}</div>{% endif %}
+            </div>
+            {% endfor %}
+            {% endif %}
+            <div class="mb-3">
+              <label class="form-label fw-semibold small">Payment Slip *</label>
+              <input type="file" name="payment_slip" class="form-control form-control-sm" accept="image/*,.pdf" required>
+            </div>
+            <div class="mb-2">
+              <label class="form-label fw-semibold small">Total Amount (LKR)</label>
+              <input type="number" name="total_amount" class="form-control form-control-sm" min="0" step="0.01">
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <button type="submit" class="btn btn-primary w-100 fw-bold btn-lg">
+              <i class="fas fa-paper-plane me-2"></i>Submit Job
+            </button>
+            <p class="small text-muted text-center mt-2">Your job will be reviewed before going live.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function toggleField(id, show) {
+  document.getElementById(id).style.display = show ? 'block' : 'none';
+}
+document.getElementById('district-sel').addEventListener('change', function() {
+  const cityEl = document.getElementById('city-sel');
+  cityEl.innerHTML = '<option value="">– Select –</option>';
+  if (!this.value) return;
+  fetch(`/get-cities?district=${encodeURIComponent(this.value)}`)
+    .then(r => r.json())
+    .then(cities => cities.forEach(c => {
+      const o = document.createElement('option');
+      o.value = c.name; o.textContent = c.name;
+      cityEl.appendChild(o);
+    }));
+});
+</script>
+{% endblock %}

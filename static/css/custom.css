@@ -1,0 +1,131 @@
+/* ============================================================
+   JobPortal Pro – Custom Styles
+   ============================================================ */
+
+:root {
+  --brand-primary: #0d6efd;
+  --brand-success: #198754;
+  --card-radius: 0.75rem;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+/* --- Navbar --- */
+.navbar-brand {
+  font-size: 1.3rem;
+  letter-spacing: 0.02em;
+}
+
+/* --- Cards --- */
+.card {
+  border-radius: var(--card-radius);
+  transition: box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+  box-shadow: 0 6px 20px rgba(13, 110, 253, 0.12) !important;
+  transform: translateY(-1px);
+  transition: all 0.2s ease;
+}
+
+/* --- Hero --- */
+section.bg-primary {
+  background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+}
+
+/* --- Buttons --- */
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0d6efd, #0a58ca);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0a58ca, #084298);
+}
+
+/* --- Forms --- */
+.form-control, .form-select {
+  border-radius: 0.5rem;
+  border-color: #dee2e6;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* --- Badges --- */
+.badge {
+  font-weight: 500;
+  border-radius: 0.4rem;
+}
+
+/* --- Tables --- */
+.table > :not(caption) > * > * {
+  padding: 0.85rem 1rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.04);
+}
+
+/* --- Sidebar filter active --- */
+.form-check-input:checked + .form-check-label {
+  font-weight: 600;
+  color: var(--brand-primary);
+}
+
+/* --- Dashboard stat cards --- */
+.card .rounded-circle {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+/* --- Quick-link cards (dashboard tiles) --- */
+a.card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+  transform: translateY(-2px);
+  transition: all 0.18s ease;
+}
+
+/* --- Job description content --- */
+.job-description img { max-width: 100%; height: auto; }
+.job-description ul, .job-description ol { padding-left: 1.5rem; }
+.job-description p { margin-bottom: 0.75rem; }
+
+/* --- Alert box spacing --- */
+.alert { border-radius: var(--card-radius); }
+
+/* --- Footer --- */
+footer a:hover { color: #fff !important; }
+
+/* --- Responsive tweaks --- */
+@media (max-width: 768px) {
+  .container-fluid.px-4 { padding-left: 1rem !important; padding-right: 1rem !important; }
+  section.bg-primary .display-5 { font-size: 1.8rem; }
+}
+
+/* --- Loading states --- */
+.btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* --- Talent pool cards --- */
+.card .badge.border {
+  font-size: 0.7rem;
+  padding: 0.3em 0.6em;
+}
+
+/* --- Print --- */
+@media print {
+  .navbar, footer, .btn, #chat-widget { display: none !important; }
+  .card { box-shadow: none !important; border: 1px solid #dee2e6 !important; }
+}

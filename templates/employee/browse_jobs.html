@@ -1,0 +1,88 @@
+{% extends 'layout/base.html' %}
+{% block title %}Browse Jobs – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h4 class="fw-bold mb-4"><i class="fas fa-search me-2 text-primary"></i>Browse Jobs</h4>
+
+  <!-- Filters -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <form method="GET" class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Keyword</label>
+          <input type="text" name="keyword" class="form-control" value="{{ keyword }}" placeholder="Job title…">
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold">District</label>
+          <select name="district" class="form-select">
+            <option value="">All</option>
+            {% for d in districts %}
+            <option value="{{ d.District_name }}" {% if district == d.District_name %}selected{% endif %}>{{ d.District_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold">Category</label>
+          <select name="category" class="form-select">
+            <option value="">All</option>
+            {% for c in categories %}
+            <option value="{{ c.Description }}" {% if category == c.Description %}selected{% endif %}>{{ c.Description }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label small fw-semibold">Type</label>
+          <select name="job_type" class="form-select">
+            <option value="">All</option>
+            {% for t in ['Full Time','Part Time','Online','School Leaver'] %}
+            <option value="{{ t }}" {% if job_type == t %}selected{% endif %}>{{ t }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search me-1"></i>Search</button>
+        </div>
+        <div class="col-md-1">
+          <a href="{{ url_for('employee.browse_jobs') }}" class="btn btn-outline-secondary w-100">Clear</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <p class="text-muted mb-3"><strong>{{ jobs|length }}</strong> job{{ 's' if jobs|length != 1 }} found</p>
+
+  {% for job in jobs %}
+  <div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h6 class="fw-bold mb-1">
+            <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="text-decoration-none text-dark">{{ job.Job_role }}</a>
+          </h6>
+          <div class="text-muted small">
+            <span class="me-3"><i class="fas fa-map-marker-alt me-1"></i>{{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}</span>
+            <span class="me-3"><i class="fas fa-tag me-1"></i>{{ job.Job_category }}</span>
+            <span><i class="fas fa-calendar-times me-1"></i>Closes {{ job.Closing_date.strftime('%d %b %Y') if job.Closing_date else 'N/A' }}</span>
+          </div>
+        </div>
+        <div class="col-md-4 text-md-end mt-2 mt-md-0">
+          <span class="badge bg-secondary mb-1">{{ job.job_type }}</span>
+          <div class="d-flex gap-2 justify-content-md-end mt-1">
+            <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-sm btn-outline-primary">Details</a>
+            <form method="POST" action="{{ url_for('employee.apply_job', job_id=job.id) }}">
+              <button type="submit" class="btn btn-sm btn-primary">Quick Apply</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="text-center py-5 text-muted">
+    <i class="fas fa-search fa-3x mb-3"></i>
+    <h5>No jobs found</h5>
+    <p>Try different search terms or <a href="{{ url_for('employee.alert_settings') }}">set up alerts</a>.</p>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

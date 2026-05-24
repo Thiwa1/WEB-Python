@@ -1,0 +1,69 @@
+{% extends 'layout/base.html' %}
+{% block title %}Billing – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('employer.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-credit-card me-2 text-primary"></i>Billing</h4>
+  </div>
+
+  {% if banks %}
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-warning text-dark fw-bold border-0">Bank Transfer Details</div>
+    <div class="card-body">
+      <div class="row g-3">
+        {% for bank in banks %}
+        <div class="col-md-4">
+          <div class="bg-light rounded p-3">
+            <div class="fw-bold">{{ bank.bank_name }}</div>
+            <div class="small">A/C: <strong>{{ bank.account_number }}</strong></div>
+            {% if bank.branch_name %}<div class="small">Branch: {{ bank.branch_name }}</div>{% endif %}
+            {% if bank.branch_code %}<div class="small">Code: {{ bank.branch_code }}</div>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-bold border-0 pt-3">Payment History</div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr><th>#</th><th>Date</th><th>Amount (LKR)</th><th>Slip</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody>
+          {% for payment in payments %}
+            <tr>
+              <td>{{ payment.id }}</td>
+              <td>{{ payment.payment_date.strftime('%d %b %Y') if payment.payment_date else '–' }}</td>
+              <td class="fw-semibold">{{ "{:,.2f}".format(payment.Totaled_received or 0) }}</td>
+              <td>
+                {% if payment.slip_path %}
+                <a href="{{ url_for('static', filename=payment.slip_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fas fa-image"></i></a>
+                {% else %}–{% endif %}
+              </td>
+              <td>
+                {% if payment.Approval == 1 %}<span class="badge bg-success">Approved</span>
+                {% elif payment.Approval == 2 %}<span class="badge bg-danger" title="{{ payment.Reject_comment }}">Rejected</span>
+                {% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}
+              </td>
+              <td>
+                {% if payment.Approval == 2 %}
+                <a href="{{ url_for('employer.reupload_payment', payment_id=payment.id) }}" class="btn btn-sm btn-outline-warning">Re-upload</a>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr><td colspan="6" class="text-center text-muted py-4">No payments yet.</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

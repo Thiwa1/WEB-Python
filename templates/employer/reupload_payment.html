@@ -1,0 +1,29 @@
+{% extends 'layout/base.html' %}
+{% block title %}Re-upload Payment – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold">Re-upload Payment Slip</div>
+        <div class="card-body p-4">
+          <p class="text-muted small mb-3">Payment #{{ payment.id }} was rejected. Please upload a corrected payment slip.</p>
+          {% if payment.Reject_comment %}
+          <div class="alert alert-danger small"><strong>Rejection reason:</strong> {{ payment.Reject_comment }}</div>
+          {% endif %}
+          <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">New Payment Slip *</label>
+              <input type="file" name="payment_slip" class="form-control" accept="image/*,.pdf" required>
+            </div>
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-warning fw-bold">Upload Slip</button>
+              <a href="{{ url_for('employer.billing') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

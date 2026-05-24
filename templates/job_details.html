@@ -1,0 +1,112 @@
+{% extends 'layout/base.html' %}
+{% block title %}{{ job.Job_role }} – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Jobs</a></li>
+      <li class="breadcrumb-item active">{{ job.Job_role }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        {% if job.img_path %}
+        <img src="{{ url_for('static', filename=job.img_path) }}" class="card-img-top" style="max-height:300px;object-fit:cover;" alt="Job Banner">
+        {% endif %}
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h3 class="fw-bold mb-1">{{ job.Job_role }}</h3>
+              <div class="text-muted">
+                <span class="me-3"><i class="fas fa-map-marker-alt me-1"></i>{{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}</span>
+                <span class="me-3"><i class="fas fa-tag me-1"></i>{{ job.Job_category }}</span>
+                <span><i class="fas fa-industry me-1"></i>{{ job.Industry or 'General' }}</span>
+              </div>
+            </div>
+            <span class="badge bg-primary fs-6">{{ job.job_type }}</span>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-auto">
+              <span class="badge bg-light text-dark border">
+                <i class="fas fa-calendar-alt me-1 text-success"></i>Opens: {{ job.Opening_date.strftime('%d %b %Y') if job.Opening_date else 'N/A' }}
+              </span>
+            </div>
+            <div class="col-auto">
+              <span class="badge bg-light text-dark border">
+                <i class="fas fa-calendar-times me-1 text-danger"></i>Closes: {{ job.Closing_date.strftime('%d %b %Y') if job.Closing_date else 'N/A' }}
+              </span>
+            </div>
+            <div class="col-auto">
+              <span class="badge bg-light text-dark border">
+                <i class="fas fa-eye me-1 text-info"></i>{{ job.views or 0 }} views
+              </span>
+            </div>
+          </div>
+
+          <h5 class="fw-bold border-bottom pb-2 mb-3">Job Description</h5>
+          <div class="job-description">{{ job.job_description | safe }}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <!-- Apply Box -->
+      <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-primary text-white fw-bold">
+          <i class="fas fa-paper-plane me-2"></i>Apply Now
+        </div>
+        <div class="card-body">
+          {% if job.Apply_by_system %}
+            {% if session.user_id and session.user_type | lower in ('employee','seeker','candidate') %}
+              <form method="POST" action="{{ url_for('employee.apply_job', job_id=job.id) }}">
+                <button type="submit" class="btn btn-primary w-100 fw-bold mb-2">
+                  <i class="fas fa-check me-2"></i>Apply with My Profile
+                </button>
+              </form>
+            {% else %}
+              <a href="{{ url_for('main.apply', job_id=job.id) }}" class="btn btn-outline-primary w-100 mb-2">
+                <i class="fas fa-user me-2"></i>Apply as Guest
+              </a>
+              <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">
+                <i class="fas fa-sign-in-alt me-2"></i>Login to Apply
+              </a>
+            {% endif %}
+          {% endif %}
+          {% if job.Apply_by_email and job.Apply_by_email_address %}
+          <a href="mailto:{{ job.Apply_by_email_address }}" class="btn btn-outline-secondary w-100 mt-2">
+            <i class="fas fa-envelope me-2"></i>Apply via Email
+          </a>
+          {% endif %}
+          {% if job.apply_WhatsApp and job.apply_WhatsApp_No %}
+          <a href="https://wa.me/{{ job.apply_WhatsApp_No }}" target="_blank" class="btn btn-success w-100 mt-2">
+            <i class="fab fa-whatsapp me-2"></i>Apply via WhatsApp
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Company Info -->
+      {% if employer %}
+      <div class="card shadow-sm border-0">
+        <div class="card-header fw-bold bg-light">About the Company</div>
+        <div class="card-body">
+          {% if employer.logo_path %}
+          <img src="{{ url_for('static', filename=employer.logo_path) }}" class="img-fluid mb-2 rounded" style="max-height:80px;" alt="Logo">
+          {% endif %}
+          <h6 class="fw-bold mb-1">{{ employer.employer_name or 'N/A' }}</h6>
+          {% if employer.employer_Verified %}
+          <span class="badge bg-success mb-2"><i class="fas fa-check-circle me-1"></i>Verified</span>
+          {% endif %}
+          {% if employer.employer_about_company %}
+          <p class="small text-muted">{{ employer.employer_about_company[:200] }}{% if employer.employer_about_company|length > 200 %}…{% endif %}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

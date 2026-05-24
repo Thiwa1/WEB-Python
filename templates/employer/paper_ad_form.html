@@ -1,0 +1,42 @@
+{% extends 'layout/base.html' %}
+{% block title %}Submit Paper Ad – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-success text-white fw-bold">
+          <i class="fas fa-newspaper me-2"></i>Submit Newspaper Ad
+        </div>
+        <div class="card-body p-4">
+          <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Ad Text *</label>
+              <textarea name="ad_text" class="form-control" rows="6" required
+                        placeholder="Write your job advertisement text here. Keep it concise and include key details like role, requirements, and contact info."></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Contact Info</label>
+              <input type="text" name="contact_info" class="form-control" placeholder="Phone / Email to display in ad">
+            </div>
+            {% if banks %}
+            <div class="alert alert-info small mb-3">
+              <strong>Payment required.</strong> Transfer to one of the accounts below and upload the slip.
+              {% for b in banks %}<div>{{ b.bank_name }} – A/C: {{ b.account_number }}</div>{% endfor %}
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Payment Slip *</label>
+              <input type="file" name="payment_slip" class="form-control" accept="image/*,.pdf">
+            </div>
+            {% endif %}
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-success fw-bold">Submit Ad</button>
+              <a href="{{ url_for('employer.dashboard') }}" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

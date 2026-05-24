@@ -1,0 +1,46 @@
+{% extends 'layout/base.html' %}
+{% block title %}Settings – Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-cog me-2 text-secondary"></i>Site Settings</h4>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form method="POST">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Site Name</label>
+              <input type="text" name="site_name" class="form-control" value="{{ settings.get('site_name','JobPortal Pro') }}">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Admin Email</label>
+              <input type="email" name="admin_email" class="form-control" value="{{ settings.get('admin_email','') }}">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">VAT Rate (%)</label>
+              <input type="number" name="vat_rate" class="form-control" min="0" max="100" step="0.1"
+                     value="{{ settings.get('vat_rate','0') }}">
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold d-block">Promotional Period</label>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" name="promo_active" value="1" id="promo-toggle"
+                       {% if settings.get('promo_active') == '1' %}checked{% endif %}>
+                <label class="form-check-label" for="promo-toggle">
+                  Enable free job posting for all employers
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary fw-bold">
+              <i class="fas fa-save me-2"></i>Save Settings
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'layout/base.html' %}
+{% block title %}Confirm Application – JobPortal Pro{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white fw-bold">
+          <i class="fas fa-paper-plane me-2"></i>Confirm Application
+        </div>
+        <div class="card-body p-4 text-center">
+          <i class="fas fa-briefcase text-primary fa-3x mb-3"></i>
+          <h5 class="fw-bold">{{ job.Job_role }}</h5>
+          <p class="text-muted">{{ job.District }}{% if job.City %}, {{ job.City }}{% endif %} · {{ job.job_type }}</p>
+          <p class="text-muted small">Your saved CV and profile will be submitted to the employer.</p>
+          {% if not profile.cv_path %}
+          <div class="alert alert-warning small">
+            <i class="fas fa-exclamation-triangle me-2"></i>You haven't uploaded a CV yet.
+            <a href="{{ url_for('employee.edit_profile') }}">Upload one now</a> for a stronger application.
+          </div>
+          {% endif %}
+          <div class="d-flex gap-2 justify-content-center mt-3">
+            <form method="POST">
+              <button type="submit" class="btn btn-primary fw-bold px-4">
+                <i class="fas fa-check me-2"></i>Confirm Apply
+              </button>
+            </form>
+            <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-outline-secondary px-4">Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

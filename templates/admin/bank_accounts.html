@@ -1,0 +1,51 @@
+{% extends 'layout/base.html' %}
+{% block title %}Bank Accounts – Admin{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex align-items-center mb-4 gap-3">
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
+    <h4 class="fw-bold mb-0"><i class="fas fa-university me-2 text-warning"></i>Bank Accounts</h4>
+  </div>
+  <!-- Add Form -->
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-bold border-0 pt-3">Add Bank Account</div>
+    <div class="card-body">
+      <form method="POST" class="row g-3">
+        <div class="col-md-3"><input type="text" name="bank_name" class="form-control" placeholder="Bank Name" required></div>
+        <div class="col-md-3"><input type="text" name="account_number" class="form-control" placeholder="Account Number" required></div>
+        <div class="col-md-2"><input type="text" name="branch_name" class="form-control" placeholder="Branch Name"></div>
+        <div class="col-md-2"><input type="text" name="branch_code" class="form-control" placeholder="Branch Code"></div>
+        <div class="col-md-2"><button type="submit" class="btn btn-primary w-100"><i class="fas fa-plus me-1"></i>Add</button></div>
+      </form>
+    </div>
+  </div>
+  <!-- List -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr><th>Bank</th><th>Account No.</th><th>Branch</th><th>Code</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+        {% for bank in banks %}
+          <tr>
+            <td class="fw-semibold">{{ bank.bank_name }}</td>
+            <td>{{ bank.account_number }}</td>
+            <td>{{ bank.branch_name or '–' }}</td>
+            <td>{{ bank.branch_code or '–' }}</td>
+            <td>
+              <form method="POST" action="{{ url_for('admin.delete_bank', bank_id=bank.id) }}"
+                    onsubmit="return confirm('Remove this bank account?')">
+                <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+              </form>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="text-center text-muted py-3">No bank accounts configured.</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
