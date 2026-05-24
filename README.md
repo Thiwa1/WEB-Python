@@ -71,7 +71,7 @@ Edit `.env` with your database credentials and API keys.
 
 ### 3. Create MySQL database
 ```sql
-CREATE DATABASE tiptromr_vacancies CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE suwixvkn_vacancies CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 Tables are created automatically on first run via SQLAlchemy.
 

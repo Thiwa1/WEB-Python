@@ -10,7 +10,7 @@ class Config:
 
     # Database
     DB_HOST = os.environ.get('DB_HOST', 'localhost')
-    DB_NAME = os.environ.get('DB_NAME', 'tiptromr_vacancies')
+    DB_NAME = os.environ.get('DB_NAME', 'suwixvkn_vacancies')
     DB_USER = os.environ.get('DB_USER', 'root')
     DB_PASSWORD = os.environ.get('DB_PASSWORD', '')
     SQLALCHEMY_DATABASE_URI = (
