@@ -13,6 +13,10 @@ def create_app(config_name=None):
     app = Flask(__name__)
     app.config.from_object(config[config_name])
 
+    # Ensure upload and session folders exist (important on fresh server deployments)
+    os.makedirs(app.config.get('UPLOAD_FOLDER', 'static/uploads'), exist_ok=True)
+    os.makedirs(os.path.join(os.path.dirname(__file__), 'flask_session'), exist_ok=True)
+
     # Init extensions
     db.init_app(app)
     mail.init_app(app)
