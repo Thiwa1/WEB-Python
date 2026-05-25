@@ -1,32 +1,89 @@
 {% extends 'layout/base.html' %}
 {% block title %}Contact Us – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-7">
-      <h2 class="fw-bold mb-4 text-center">Contact Us</h2>
-      <div class="card shadow-sm border-0">
-        <div class="card-body p-4">
-          <form method="POST">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Your Name</label>
-              <input type="text" name="name" class="form-control" required>
+
+<!-- Page Header -->
+<section class="page-header-section">
+  <div class="container">
+    <div class="page-header-content" data-aos="fade-up">
+      <h1 class="page-header-title">Get in <span class="gradient-text">Touch</span></h1>
+      <p class="page-header-subtitle">Have questions? We'd love to hear from you. Send us a message and we'll respond as soon as possible.</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row g-4 justify-content-center">
+
+      <!-- Contact Info -->
+      <div class="col-lg-4" data-aos="fade-right">
+        <div class="contact-info-card">
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div>
+              <div class="contact-info-label">Our Location</div>
+              <div class="contact-info-value">Colombo, Sri Lanka</div>
             </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Email Address</label>
-              <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+            <div>
+              <div class="contact-info-label">Email Us</div>
+              <div class="contact-info-value">support@jobportalpro.lk</div>
             </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Message</label>
-              <textarea name="message" class="form-control" rows="5" required></textarea>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-phone"></i></div>
+            <div>
+              <div class="contact-info-label">Call Us</div>
+              <div class="contact-info-value">+94 11 234 5678</div>
             </div>
-            <button type="submit" class="btn btn-primary w-100 fw-bold">
-              <i class="fas fa-paper-plane me-2"></i>Send Message
-            </button>
-          </form>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-clock"></i></div>
+            <div>
+              <div class="contact-info-label">Business Hours</div>
+              <div class="contact-info-value">Mon – Fri, 9am – 6pm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="col-lg-7" data-aos="fade-left">
+        <div class="dash-card">
+          <div class="dash-card-header"><span><i class="fas fa-paper-plane me-2"></i>Send a Message</span></div>
+          <div class="dash-card-body">
+            <form method="POST">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Your Name</label>
+                  <input type="text" name="name" class="form-control rounded-3" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Email Address</label>
+                  <input type="email" name="email" class="form-control rounded-3" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold small">Subject</label>
+                  <input type="text" name="subject" class="form-control rounded-3" placeholder="How can we help?">
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold small">Message</label>
+                  <textarea name="message" class="form-control rounded-3" rows="5" required placeholder="Tell us more…"></textarea>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary-grad px-5">
+                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}

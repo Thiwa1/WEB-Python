@@ -1,23 +1,75 @@
 {% extends 'layout/base.html' %}
 {% block title %}Policies – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-9">
-      <h2 class="fw-bold mb-4">Privacy Policy &amp; Terms</h2>
-      <div class="card shadow-sm border-0 p-4">
-        <h5 class="fw-bold">1. Data Collection</h5>
-        <p class="text-muted">We collect personal information (name, email, phone, CV) solely for facilitating job applications and matching.</p>
-        <h5 class="fw-bold">2. Data Use</h5>
-        <p class="text-muted">Your data is shared only with employers for recruitment purposes and is never sold to third parties.</p>
-        <h5 class="fw-bold">3. Cookies</h5>
-        <p class="text-muted">We use session cookies to keep you logged in. No tracking cookies are used.</p>
-        <h5 class="fw-bold">4. File Uploads</h5>
-        <p class="text-muted">Uploaded CVs and documents are stored securely and accessible only to authorised employers.</p>
-        <h5 class="fw-bold">5. Contact</h5>
-        <p class="text-muted">For data removal requests, contact us via the <a href="{{ url_for('main.contact') }}">Contact page</a>.</p>
+
+<section class="page-header-section">
+  <div class="container">
+    <div class="page-header-content" data-aos="fade-up">
+      <h1 class="page-header-title">Privacy Policy &amp; <span class="gradient-text">Terms</span></h1>
+      <p class="page-header-subtitle">We are committed to protecting your data and being transparent about how we use it.</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="dash-card" data-aos="fade-up">
+          <div class="dash-card-body">
+
+            <div class="policy-section">
+              <div class="policy-icon"><i class="fas fa-database"></i></div>
+              <div>
+                <h5 class="fw-bold mb-2">1. Data Collection</h5>
+                <p class="text-muted">We collect personal information (name, email, phone, CV) solely for facilitating job applications and matching with suitable employers. All data is collected with your consent.</p>
+              </div>
+            </div>
+
+            <div class="policy-section">
+              <div class="policy-icon"><i class="fas fa-share-alt"></i></div>
+              <div>
+                <h5 class="fw-bold mb-2">2. Data Use</h5>
+                <p class="text-muted">Your data is shared only with employers for recruitment purposes and is never sold to third parties. We use it to improve job matching and send relevant notifications.</p>
+              </div>
+            </div>
+
+            <div class="policy-section">
+              <div class="policy-icon"><i class="fas fa-cookie-bite"></i></div>
+              <div>
+                <h5 class="fw-bold mb-2">3. Cookies</h5>
+                <p class="text-muted">We use session cookies to keep you logged in. No advertising or tracking cookies are used. You can disable cookies in your browser settings.</p>
+              </div>
+            </div>
+
+            <div class="policy-section">
+              <div class="policy-icon"><i class="fas fa-folder-open"></i></div>
+              <div>
+                <h5 class="fw-bold mb-2">4. File Uploads</h5>
+                <p class="text-muted">Uploaded CVs and documents are stored securely and accessible only to authorised employers reviewing applications you have submitted.</p>
+              </div>
+            </div>
+
+            <div class="policy-section">
+              <div class="policy-icon"><i class="fas fa-shield-alt"></i></div>
+              <div>
+                <h5 class="fw-bold mb-2">5. Security</h5>
+                <p class="text-muted">All passwords are hashed using bcrypt. Connections are protected with CSRF tokens. We follow industry-standard security practices.</p>
+              </div>
+            </div>
+
+            <div class="policy-section" style="border-bottom:none;padding-bottom:0;">
+              <div class="policy-icon"><i class="fas fa-envelope"></i></div>
+              <div>
+                <h5 class="fw-bold mb-2">6. Contact &amp; Data Removal</h5>
+                <p class="text-muted mb-3">For data removal requests or privacy concerns, contact us via the <a href="{{ url_for('main.contact') }}" class="auth-link">Contact page</a>. We will respond within 48 hours.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</section>
 {% endblock %}

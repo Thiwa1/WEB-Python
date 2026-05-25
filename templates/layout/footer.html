@@ -1,28 +1,52 @@
-<footer class="bg-dark text-light mt-5 py-4">
+<footer class="site-footer">
   <div class="container">
-    <div class="row">
-      <div class="col-md-4 mb-3">
-        <h6 class="fw-bold"><i class="fas fa-briefcase me-2"></i>JobPortal Pro</h6>
-        <p class="small text-muted">Connecting talent with employers across Sri Lanka.</p>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <div class="brand-icon"><i class="fas fa-briefcase"></i></div>
+          <span>JobPortal <strong>Pro</strong></span>
+        </div>
+        <p>Sri Lanka's most trusted job platform — connecting top talent with the best employers since 2024.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        </div>
       </div>
-      <div class="col-md-4 mb-3">
-        <h6 class="fw-bold">Quick Links</h6>
-        <ul class="list-unstyled small">
-          <li><a href="{{ url_for('main.index') }}" class="text-muted text-decoration-none">Browse Jobs</a></li>
-          <li><a href="{{ url_for('auth.register') }}" class="text-muted text-decoration-none">Register</a></li>
-          <li><a href="{{ url_for('main.contact') }}" class="text-muted text-decoration-none">Contact Us</a></li>
-          <li><a href="{{ url_for('main.policies') }}" class="text-muted text-decoration-none">Privacy Policy</a></li>
+
+      <div class="footer-links">
+        <h6>Job Seekers</h6>
+        <ul>
+          <li><a href="{{ url_for('main.index') }}">Browse Jobs</a></li>
+          <li><a href="{{ url_for('auth.register') }}">Create Account</a></li>
+          <li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
+          <li><a href="{{ url_for('main.contact') }}">Get Help</a></li>
         </ul>
       </div>
-      <div class="col-md-4 mb-3">
-        <h6 class="fw-bold">For Employers</h6>
-        <ul class="list-unstyled small">
-          <li><a href="{{ url_for('auth.register') }}" class="text-muted text-decoration-none">Post a Job</a></li>
-          <li><a href="{{ url_for('main.paper_ads') }}" class="text-muted text-decoration-none">Paper Ads</a></li>
+
+      <div class="footer-links">
+        <h6>Employers</h6>
+        <ul>
+          <li><a href="{{ url_for('auth.register') }}">Post a Job</a></li>
+          <li><a href="{{ url_for('main.paper_ads') }}">Paper Ads</a></li>
+          <li><a href="{{ url_for('main.contact') }}">Contact Sales</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h6>Company</h6>
+        <ul>
+          <li><a href="{{ url_for('main.contact') }}">About Us</a></li>
+          <li><a href="{{ url_for('main.policies') }}">Privacy Policy</a></li>
+          <li><a href="{{ url_for('main.policies') }}">Terms of Service</a></li>
         </ul>
       </div>
     </div>
-    <hr class="border-secondary">
-    <p class="text-center text-muted small mb-0">&copy; {{ now.year if now else 2026 }} JobPortal Pro. All rights reserved.</p>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ now.year if now else 2026 }} JobPortal Pro. All rights reserved.</p>
+      <p>Built with <i class="fas fa-heart" style="color:var(--accent)"></i> for Sri Lanka</p>
+    </div>
   </div>
 </footer>

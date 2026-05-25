@@ -1,60 +1,100 @@
 {% extends 'layout/base.html' %}
 {% block title %}Promote Myself – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employee.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0"><i class="fas fa-star me-2 text-warning"></i>Promote Myself to Employers</h4>
-  </div>
-  <p class="text-muted">Create a talent profile visible to all employers in the Talent Pool.</p>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Job Seeker</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employee.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employee.browse_jobs') }}" class="sidebar-link"><i class="fas fa-search"></i><span>Browse Jobs</span></a>
+      <a href="{{ url_for('employee.my_applications') }}" class="sidebar-link"><i class="fas fa-file-alt"></i><span>My Applications</span></a>
+      <a href="{{ url_for('employee.edit_profile') }}" class="sidebar-link"><i class="fas fa-user-edit"></i><span>Edit Profile</span></a>
+      <a href="{{ url_for('employee.manage_documents') }}" class="sidebar-link"><i class="fas fa-folder-open"></i><span>My Documents</span></a>
+      <a href="{{ url_for('employee.alert_settings') }}" class="sidebar-link"><i class="fas fa-bell"></i><span>Job Alerts</span></a>
+      <a href="{{ url_for('employee.promote_self') }}" class="sidebar-link active"><i class="fas fa-star"></i><span>Promote Myself</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
 
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-          <form method="POST">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Headline *</label>
-              <input type="text" name="headline" class="form-control" required
-                     value="{{ offer.headline if offer else '' }}"
-                     placeholder="e.g. Experienced Software Engineer | 5 years | Colombo">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Skills / Tags <small class="text-muted">(comma-separated)</small></label>
-              <input type="text" name="skills_tags" class="form-control"
-                     value="{{ offer.skills_tags if offer else '' }}"
-                     placeholder="Python, Flask, MySQL, REST API">
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Years of Experience</label>
-                <input type="number" name="experience_years" class="form-control" min="0" max="50"
-                       value="{{ offer.experience_years if offer else 0 }}">
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Promote Myself</h4>
+        <p class="dash-page-sub">Create a talent profile visible to all employers</p>
+      </div>
+      {% if offer %}
+      <span class="status-badge status-success"><i class="fas fa-circle me-1" style="font-size:.5rem;"></i>Profile Live</span>
+      {% endif %}
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <!-- Info Banner -->
+        <div class="alert-banner alert-banner-purple mb-4" data-aos="fade-up">
+          <i class="fas fa-star fa-lg"></i>
+          <div>
+            <strong>Stand out to employers!</strong> Your talent profile will appear in the employer talent pool, letting companies find and contact you directly.
+          </div>
+        </div>
+
+        <div class="dash-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="dash-card-header"><span><i class="fas fa-id-card me-2"></i>Talent Profile</span></div>
+          <div class="dash-card-body">
+            <form method="POST">
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">Professional Headline *</label>
+                <input type="text" name="headline" class="form-control rounded-3" required
+                       value="{{ offer.headline if offer else '' }}"
+                       placeholder="e.g. Experienced Software Engineer | 5 years | Colombo">
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Expected Monthly Salary (LKR)</label>
-                <input type="number" name="expected_salary" class="form-control" min="0" step="1000"
-                       value="{{ offer.expected_salary if offer else '' }}" placeholder="e.g. 80000">
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">Skills / Tags <span class="text-muted">(comma-separated)</span></label>
+                <input type="text" name="skills_tags" class="form-control rounded-3"
+                       value="{{ offer.skills_tags if offer else '' }}"
+                       placeholder="Python, Flask, MySQL, REST API, Communication">
               </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">About Me</label>
-              <textarea name="description" class="form-control" rows="5"
-                        placeholder="Brief introduction about yourself, your experience, and what you're looking for…">{{ offer.description if offer else '' }}</textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Profile Expiry Date *</label>
-              <input type="date" name="expiry_date" class="form-control" required
-                     value="{{ offer.expiry_date if offer else '' }}">
-              <div class="form-text">Your profile will be hidden from employers after this date.</div>
-            </div>
-            <button type="submit" class="btn btn-warning fw-bold w-100">
-              <i class="fas fa-star me-2"></i>{{ 'Update' if offer else 'Go Live' }} Talent Profile
-            </button>
-          </form>
+              <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Years of Experience</label>
+                  <input type="number" name="experience_years" class="form-control rounded-3" min="0" max="50"
+                         value="{{ offer.experience_years if offer else 0 }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Expected Monthly Salary (LKR)</label>
+                  <input type="number" name="expected_salary" class="form-control rounded-3" min="0" step="1000"
+                         value="{{ offer.expected_salary if offer else '' }}" placeholder="e.g. 80000">
+                </div>
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">About Me</label>
+                <textarea name="description" class="form-control rounded-3" rows="5"
+                          placeholder="Brief introduction about yourself, your experience, and what you're looking for…">{{ offer.description if offer else '' }}</textarea>
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">Profile Expiry Date *</label>
+                <input type="date" name="expiry_date" class="form-control rounded-3" required
+                       value="{{ offer.expiry_date.strftime('%Y-%m-%d') if offer and offer.expiry_date else '' }}">
+                <div class="form-text text-muted small mt-1">Your profile will be hidden from employers after this date.</div>
+              </div>
+              <button type="submit" class="btn btn-primary-grad w-100 btn-lg">
+                <i class="fas fa-star me-2"></i>{{ 'Update' if offer else 'Go Live —' }} Talent Profile
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}

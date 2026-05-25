@@ -1,26 +1,232 @@
 {% extends 'layout/base.html' %}
-{% block title %}Bank Details – JobPortal Pro{% endblock %}
+{% block title %}Bank Transfer Details – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employer.billing') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0">Bank Transfer Details</h4>
-  </div>
-  {% if banks %}
-  <div class="row g-3">
-    {% for bank in banks %}
-    <div class="col-md-4">
-      <div class="card border-0 shadow-sm p-3">
-        <h6 class="fw-bold text-primary">{{ bank.bank_name }}</h6>
-        <div><strong>A/C:</strong> {{ bank.account_number }}</div>
-        {% if bank.branch_name %}<div><strong>Branch:</strong> {{ bank.branch_name }}</div>{% endif %}
-        {% if bank.branch_code %}<div><strong>Code:</strong> {{ bank.branch_code }}</div>{% endif %}
+<div class="dashboard-wrapper">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Employer</div>
       </div>
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <div class="alert alert-info">No bank accounts configured. Contact admin for payment details.</div>
-  {% endif %}
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employer.dashboard') }}" class="sidebar-link">
+        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('employer.post_job') }}" class="sidebar-link">
+        <i class="fas fa-plus-circle"></i><span>Post a Job</span>
+      </a>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="sidebar-link">
+        <i class="fas fa-list-alt"></i><span>Manage Jobs</span>
+      </a>
+      <a href="{{ url_for('employer.talent_pool') }}" class="sidebar-link">
+        <i class="fas fa-users"></i><span>Talent Pool</span>
+      </a>
+      <a href="{{ url_for('employer.profile') }}" class="sidebar-link">
+        <i class="fas fa-building"></i><span>Company Profile</span>
+      </a>
+      <a href="{{ url_for('employer.billing') }}" class="sidebar-link active">
+        <i class="fas fa-credit-card"></i><span>Billing</span>
+      </a>
+      <a href="{{ url_for('employer.submit_paper_ad') }}" class="sidebar-link">
+        <i class="fas fa-newspaper"></i><span>Paper Ads</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('main.index') }}" class="sidebar-link">
+        <i class="fas fa-globe"></i><span>Browse Site</span>
+      </a>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Bank Transfer Details</h4>
+        <p class="dash-page-sub">Use the accounts below to complete your payment</p>
+      </div>
+      <a href="{{ url_for('employer.billing') }}" class="btn btn-outline-secondary rounded-pill px-4">
+        <i class="fas fa-arrow-left me-2"></i>Back to Billing
+      </a>
+    </div>
+
+    <!-- Info Banner -->
+    <div class="alert-banner alert-banner-info mb-4" data-aos="fade-up">
+      <i class="fas fa-info-circle me-2"></i>
+      After making the transfer, go to <strong>Billing</strong> and upload your payment slip for verification.
+    </div>
+
+    <!-- Bank Account Cards -->
+    {% if banks %}
+    <div class="row g-4" data-aos="fade-up" data-aos-delay="100">
+      {% for bank in banks %}
+      <div class="col-md-4">
+        <div class="dash-card bank-detail-card">
+          <div class="bank-detail-header">
+            <div class="bank-detail-icon">
+              <i class="fas fa-university"></i>
+            </div>
+            <div class="bank-detail-name">{{ bank.bank_name }}</div>
+          </div>
+          <div class="bank-detail-body">
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Account No.</span>
+              <span class="bank-detail-value fw-bold" style="font-family:monospace;font-size:1rem;letter-spacing:.05em;">
+                {{ bank.account_number }}
+              </span>
+            </div>
+            {% if bank.branch_name %}
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Branch</span>
+              <span class="bank-detail-value">{{ bank.branch_name }}</span>
+            </div>
+            {% endif %}
+            {% if bank.branch_code %}
+            <div class="bank-detail-row">
+              <span class="bank-detail-label">Branch Code</span>
+              <span class="bank-detail-value">{{ bank.branch_code }}</span>
+            </div>
+            {% endif %}
+          </div>
+          <!-- Copy Account Number -->
+          <button class="btn btn-sm w-100 mt-3 rounded-pill"
+                  style="background:var(--surface-2);border:1px solid var(--border-color);color:var(--text-secondary);font-size:.8rem;"
+                  onclick="copyText('{{ bank.account_number }}', this)">
+            <i class="fas fa-copy me-1"></i>Copy Account Number
+          </button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Payment Steps -->
+    <div class="dash-card mt-4" data-aos="fade-up" data-aos-delay="200">
+      <div class="dash-card-header"><span><i class="fas fa-list-ol me-2"></i>How to Pay</span></div>
+      <div class="dash-card-body">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="how-step text-center p-3">
+              <div class="how-step-num">1</div>
+              <div class="how-step-icon"><i class="fas fa-university"></i></div>
+              <div class="fw-semibold small mt-2">Visit Bank or App</div>
+              <div class="text-muted" style="font-size:.75rem;">Use any bank branch, ATM, or online banking</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="how-step text-center p-3">
+              <div class="how-step-num">2</div>
+              <div class="how-step-icon"><i class="fas fa-paper-plane"></i></div>
+              <div class="fw-semibold small mt-2">Transfer Amount</div>
+              <div class="text-muted" style="font-size:.75rem;">Transfer the exact amount to one of the accounts above</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="how-step text-center p-3">
+              <div class="how-step-num">3</div>
+              <div class="how-step-icon"><i class="fas fa-image"></i></div>
+              <div class="fw-semibold small mt-2">Save Slip</div>
+              <div class="text-muted" style="font-size:.75rem;">Take a screenshot or photo of your transfer receipt</div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="how-step text-center p-3">
+              <div class="how-step-num">4</div>
+              <div class="how-step-icon"><i class="fas fa-upload"></i></div>
+              <div class="fw-semibold small mt-2">Upload Slip</div>
+              <div class="text-muted" style="font-size:.75rem;">Go to Billing and upload your payment slip for approval</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% else %}
+    <div class="dash-card" data-aos="fade-up">
+      <div class="dash-card-body">
+        <div class="empty-state py-5">
+          <div class="empty-icon"><i class="fas fa-university"></i></div>
+          <h6 class="fw-semibold mt-3">No bank accounts available</h6>
+          <p class="text-muted small">Please contact our support team for payment instructions.</p>
+          <a href="{{ url_for('main.contact') }}" class="btn btn-primary-grad mt-2">
+            <i class="fas fa-envelope me-2"></i>Contact Support
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+  </main>
 </div>
+
+<style>
+.bank-detail-card {
+  overflow: hidden;
+  transition: box-shadow .2s, transform .2s;
+}
+.bank-detail-card:hover {
+  box-shadow: 0 12px 32px rgba(99,102,241,.15);
+  transform: translateY(-3px);
+}
+.bank-detail-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+.bank-detail-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.bank-detail-name {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+.bank-detail-body { display: flex; flex-direction: column; gap: .6rem; }
+.bank-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .4rem .6rem;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.bank-detail-label { font-size: .75rem; color: var(--text-muted); }
+.bank-detail-value { font-size: .85rem; color: var(--text-primary); }
+.how-step { border-radius: 12px; background: var(--surface-2); }
+.how-step-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--gradient-1); color: #fff;
+  font-size: .8rem; font-weight: 700; margin: 0 auto .5rem;
+}
+.how-step-icon { font-size: 1.4rem; color: var(--brand-1); }
+</style>
+
+<script>
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+    btn.style.color = 'var(--green)';
+    setTimeout(() => { btn.innerHTML = orig; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
 {% endblock %}

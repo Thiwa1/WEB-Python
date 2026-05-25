@@ -1,78 +1,115 @@
 {% extends 'layout/base.html' %}
 {% block title %}Edit Profile – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employee.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0"><i class="fas fa-user-edit me-2 text-primary"></i>Edit Profile</h4>
-  </div>
-  <div class="row g-4">
-    <div class="col-md-3 text-center">
-      <div class="card border-0 shadow-sm p-4">
-        {% if profile.img_path %}
-        <img src="{{ url_for('static', filename=profile.img_path) }}" class="rounded-circle mb-3" style="width:100px;height:100px;object-fit:cover;" alt="Profile">
-        {% else %}
-        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3" style="width:100px;height:100px;">
-          <i class="fas fa-user fa-3x text-primary"></i>
-        </div>
-        {% endif %}
-        <h6 class="fw-bold">{{ profile.employee_full_name or user.full_name }}</h6>
-        <p class="text-muted small">{{ user.user_email }}</p>
-        {% if profile.cv_path %}
-        <a href="{{ url_for('static', filename=profile.cv_path) }}" target="_blank" class="btn btn-sm btn-outline-success">
-          <i class="fas fa-file-pdf me-1"></i>View CV
-        </a>
-        {% endif %}
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Job Seeker</div>
       </div>
     </div>
-    <div class="col-md-9">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-          <form method="POST" enctype="multipart/form-data">
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Full Name</label>
-                <input type="text" name="full_name" class="form-control" value="{{ profile.employee_full_name or user.full_name }}">
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employee.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employee.browse_jobs') }}" class="sidebar-link"><i class="fas fa-search"></i><span>Browse Jobs</span></a>
+      <a href="{{ url_for('employee.my_applications') }}" class="sidebar-link"><i class="fas fa-file-alt"></i><span>My Applications</span></a>
+      <a href="{{ url_for('employee.edit_profile') }}" class="sidebar-link active"><i class="fas fa-user-edit"></i><span>Edit Profile</span></a>
+      <a href="{{ url_for('employee.manage_documents') }}" class="sidebar-link"><i class="fas fa-folder-open"></i><span>My Documents</span></a>
+      <a href="{{ url_for('employee.alert_settings') }}" class="sidebar-link"><i class="fas fa-bell"></i><span>Job Alerts</span></a>
+      <a href="{{ url_for('employee.promote_self') }}" class="sidebar-link"><i class="fas fa-star"></i><span>Promote Myself</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Edit Profile</h4>
+        <p class="dash-page-sub">Keep your profile up to date for better opportunities</p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Profile Card -->
+      <div class="col-lg-3" data-aos="fade-right">
+        <div class="dash-card text-center p-4">
+          {% if profile.img_path %}
+          <img src="{{ url_for('static', filename=profile.img_path) }}" class="rounded-circle mb-3 border" style="width:100px;height:100px;object-fit:cover;" alt="Profile">
+          {% else %}
+          <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width:100px;height:100px;background:var(--gradient-1);">
+            <span style="font-size:2.5rem;color:#fff;font-weight:700;">{{ session.full_name[0] | upper }}</span>
+          </div>
+          {% endif %}
+          <h6 class="fw-bold mb-0">{{ profile.employee_full_name or user.full_name }}</h6>
+          <p class="text-muted small mb-3">{{ user.user_email }}</p>
+          {% if profile.cv_path %}
+          <a href="{{ url_for('static', filename=profile.cv_path) }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill w-100">
+            <i class="fas fa-file-pdf me-1"></i>View CV
+          </a>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Edit Form -->
+      <div class="col-lg-9" data-aos="fade-left">
+        <div class="dash-card">
+          <div class="dash-card-header"><span><i class="fas fa-user-edit me-2"></i>Personal Information</span></div>
+          <div class="dash-card-body">
+            <form method="POST" enctype="multipart/form-data">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Full Name</label>
+                  <input type="text" name="full_name" class="form-control rounded-3" value="{{ profile.employee_full_name or user.full_name }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Name with Initials</label>
+                  <input type="text" name="name_with_initial" class="form-control rounded-3" value="{{ profile.employee_name_with_initial or '' }}" placeholder="e.g. K.A. Perera">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Mobile Number</label>
+                  <input type="tel" name="mobile_number" class="form-control rounded-3" value="{{ user.mobile_number }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">WhatsApp Number</label>
+                  <input type="tel" name="whatsapp_number" class="form-control rounded-3" value="{{ user.WhatsApp_number }}">
+                </div>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Name with Initials</label>
-                <input type="text" name="name_with_initial" class="form-control" value="{{ profile.employee_name_with_initial or '' }}" placeholder="e.g. K.A. Perera">
+
+              <hr class="my-4">
+              <h6 class="fw-bold mb-3">Documents</h6>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold small">Profile Photo</label>
+                  <input type="file" name="profile_img" class="form-control rounded-3" accept="image/*">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold small">CV / Resume</label>
+                  <input type="file" name="cv" class="form-control rounded-3" accept=".pdf,.doc,.docx">
+                  {% if profile.cv_path %}<div class="small text-success mt-1"><i class="fas fa-check-circle me-1"></i>CV uploaded</div>{% endif %}
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold small">Cover Letter</label>
+                  <input type="file" name="cover_letter" class="form-control rounded-3" accept=".pdf,.doc,.docx">
+                  {% if profile.cl_path %}<div class="small text-success mt-1"><i class="fas fa-check-circle me-1"></i>Uploaded</div>{% endif %}
+                </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Mobile Number</label>
-                <input type="tel" name="mobile_number" class="form-control" value="{{ user.mobile_number }}">
+
+              <div class="mt-4">
+                <button type="submit" class="btn btn-primary-grad px-5">
+                  <i class="fas fa-save me-2"></i>Save Profile
+                </button>
               </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">WhatsApp Number</label>
-                <input type="tel" name="whatsapp_number" class="form-control" value="{{ user.WhatsApp_number }}">
-              </div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">Profile Photo <small class="text-muted">(image)</small></label>
-                <input type="file" name="profile_img" class="form-control" accept="image/*">
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">CV / Resume <small class="text-muted">(PDF/DOC)</small></label>
-                <input type="file" name="cv" class="form-control" accept=".pdf,.doc,.docx">
-                {% if profile.cv_path %}<div class="small text-success mt-1"><i class="fas fa-check me-1"></i>CV uploaded</div>{% endif %}
-              </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">Cover Letter <small class="text-muted">(PDF/DOC)</small></label>
-                <input type="file" name="cover_letter" class="form-control" accept=".pdf,.doc,.docx">
-                {% if profile.cl_path %}<div class="small text-success mt-1"><i class="fas fa-check me-1"></i>Cover letter uploaded</div>{% endif %}
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary fw-bold">
-              <i class="fas fa-save me-2"></i>Save Profile
-            </button>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}

@@ -1,83 +1,197 @@
 {% extends 'layout/base.html' %}
 {% block title %}Admin Dashboard – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container-fluid py-4 px-4">
-  <h4 class="fw-bold mb-4"><i class="fas fa-shield-alt me-2 text-danger"></i>Admin Dashboard</h4>
+<div class="dashboard-wrapper">
 
-  <!-- Stats -->
-  <div class="row g-3 mb-4">
-    {% for label, val, icon, color in [
-        ('Total Jobs', stats.total_jobs, 'fa-briefcase', 'primary'),
-        ('Pending Review', stats.pending_jobs, 'fa-clock', 'warning'),
-        ('Active Jobs', stats.active_jobs, 'fa-check-circle', 'success'),
-        ('Employers', stats.total_employers, 'fa-building', 'info'),
-        ('Job Seekers', stats.total_seekers, 'fa-users', 'secondary'),
-        ('Pending Payments', stats.pending_payments, 'fa-credit-card', 'danger')] %}
-    <div class="col-6 col-md-2">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body text-center py-3">
-          <i class="fas {{ icon }} text-{{ color }} fa-2x mb-2"></i>
-          <div class="fs-4 fw-bold">{{ val }}</div>
-          <div class="small text-muted">{{ label }}</div>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" style="background: linear-gradient(135deg,#ef4444,#dc2626);">
+        <i class="fas fa-shield-alt" style="font-size:.9rem;"></i>
+      </div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Administrator</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link active">
+        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+      </a>
+      <div class="sidebar-section-label">Content</div>
+      <a href="{{ url_for('admin.manage_jobs') }}" class="sidebar-link">
+        <i class="fas fa-briefcase"></i><span>Manage Jobs</span>
+      </a>
+      <a href="{{ url_for('admin.approve_payments') }}" class="sidebar-link">
+        <i class="fas fa-credit-card"></i><span>Approve Payments</span>
+      </a>
+      <a href="{{ url_for('admin.verify_recruiters') }}" class="sidebar-link">
+        <i class="fas fa-check-double"></i><span>Verify Employers</span>
+      </a>
+      <a href="{{ url_for('admin.paper_ads') }}" class="sidebar-link">
+        <i class="fas fa-newspaper"></i><span>Paper Ads</span>
+      </a>
+      <div class="sidebar-section-label">Reports</div>
+      <a href="{{ url_for('admin.revenue_report') }}" class="sidebar-link">
+        <i class="fas fa-chart-bar"></i><span>Revenue Report</span>
+      </a>
+      <a href="{{ url_for('admin.seeker_report') }}" class="sidebar-link">
+        <i class="fas fa-users"></i><span>Seeker Report</span>
+      </a>
+      <a href="{{ url_for('admin.sms_panel') }}" class="sidebar-link">
+        <i class="fas fa-sms"></i><span>SMS Panel</span>
+      </a>
+      <div class="sidebar-section-label">Config</div>
+      <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link">
+        <i class="fas fa-tags"></i><span>Categories</span>
+      </a>
+      <a href="{{ url_for('admin.manage_rates') }}" class="sidebar-link">
+        <i class="fas fa-dollar-sign"></i><span>Rates</span>
+      </a>
+      <a href="{{ url_for('admin.bank_accounts') }}" class="sidebar-link">
+        <i class="fas fa-university"></i><span>Bank Accounts</span>
+      </a>
+      <a href="{{ url_for('admin.manage_staff') }}" class="sidebar-link">
+        <i class="fas fa-user-shield"></i><span>Staff</span>
+      </a>
+      <a href="{{ url_for('admin.settings') }}" class="sidebar-link">
+        <i class="fas fa-cog"></i><span>Settings</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Admin Dashboard</h4>
+        <p class="dash-page-sub">Platform overview and management</p>
+      </div>
+      <div class="d-flex gap-2">
+        {% if stats.pending_jobs > 0 %}
+        <a href="{{ url_for('admin.manage_jobs') }}" class="btn btn-warning btn-sm rounded-pill px-3">
+          <i class="fas fa-clock me-1"></i>{{ stats.pending_jobs }} Pending
+        </a>
+        {% endif %}
+        {% if stats.pending_payments > 0 %}
+        <a href="{{ url_for('admin.approve_payments') }}" class="btn btn-danger btn-sm rounded-pill px-3">
+          <i class="fas fa-credit-card me-1"></i>{{ stats.pending_payments }} Payments
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid kpi-grid-6" data-aos="fade-up">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-purple"><i class="fas fa-briefcase"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ stats.total_jobs }}</div>
+          <div class="kpi-label">Total Jobs</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-yellow"><i class="fas fa-clock"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ stats.pending_jobs }}</div>
+          <div class="kpi-label">Pending Review</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-green"><i class="fas fa-check-circle"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ stats.active_jobs }}</div>
+          <div class="kpi-label">Active Jobs</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-blue"><i class="fas fa-building"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ stats.total_employers }}</div>
+          <div class="kpi-label">Employers</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-indigo"><i class="fas fa-users"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ stats.total_seekers }}</div>
+          <div class="kpi-label">Job Seekers</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-red"><i class="fas fa-credit-card"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ stats.pending_payments }}</div>
+          <div class="kpi-label">Pending Payments</div>
         </div>
       </div>
     </div>
-    {% endfor %}
-  </div>
 
-  <!-- Quick Links -->
-  <div class="row g-3 mb-4">
-    {% for label, url, icon, color in [
-        ('Manage Jobs', url_for('admin.manage_jobs'), 'fa-briefcase', 'primary'),
-        ('Approve Payments', url_for('admin.approve_payments'), 'fa-credit-card', 'warning'),
-        ('Verify Employers', url_for('admin.verify_recruiters'), 'fa-check-double', 'success'),
-        ('Paper Ads', url_for('admin.paper_ads'), 'fa-newspaper', 'info'),
-        ('SMS Panel', url_for('admin.sms_panel'), 'fa-sms', 'secondary'),
-        ('Revenue Report', url_for('admin.revenue_report'), 'fa-chart-bar', 'dark'),
-        ('Seeker Report', url_for('admin.seeker_report'), 'fa-users', 'primary'),
-        ('Categories', url_for('admin.manage_categories'), 'fa-tags', 'info'),
-        ('Rates', url_for('admin.manage_rates'), 'fa-dollar-sign', 'success'),
-        ('Bank Accounts', url_for('admin.bank_accounts'), 'fa-university', 'warning'),
-        ('Staff', url_for('admin.manage_staff'), 'fa-user-shield', 'danger'),
-        ('Settings', url_for('admin.settings'), 'fa-cog', 'secondary')] %}
-    <div class="col-6 col-md-2">
-      <a href="{{ url }}" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 d-flex flex-column align-items-center justify-content-center">
-        <i class="fas {{ icon }} text-{{ color }} fa-2x mb-2"></i>
-        <span class="small fw-semibold text-dark">{{ label }}</span>
+    <!-- Quick Actions -->
+    <div class="quick-actions-grid quick-actions-grid-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+      {% for label, url, icon in [
+          ('Manage Jobs', url_for('admin.manage_jobs'), 'fa-briefcase'),
+          ('Approve Payments', url_for('admin.approve_payments'), 'fa-credit-card'),
+          ('Verify Employers', url_for('admin.verify_recruiters'), 'fa-check-double'),
+          ('SMS Panel', url_for('admin.sms_panel'), 'fa-sms'),
+          ('Revenue Report', url_for('admin.revenue_report'), 'fa-chart-bar'),
+          ('Seeker Report', url_for('admin.seeker_report'), 'fa-users'),
+          ('Paper Ads', url_for('admin.paper_ads'), 'fa-newspaper'),
+          ('Settings', url_for('admin.settings'), 'fa-cog')] %}
+      <a href="{{ url }}" class="quick-action-card">
+        <i class="fas {{ icon }}"></i>
+        <span>{{ label }}</span>
       </a>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
 
-  <!-- Recent Jobs -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white fw-bold border-0">Recent Job Postings</div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr><th>Title</th><th>Type</th><th>District</th><th>Status</th><th>Action</th></tr>
-          </thead>
-          <tbody>
-          {% for job in recent_jobs %}
-            <tr>
-              <td class="fw-semibold">{{ job.Job_role }}</td>
-              <td><span class="badge bg-secondary">{{ job.job_type }}</span></td>
-              <td>{{ job.District }}</td>
-              <td>
-                {% if job.Approved %}<span class="badge bg-success">Live</span>
-                {% elif job.rejection_reason %}<span class="badge bg-danger">Rejected</span>
-                {% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}
-              </td>
-              <td>
-                <a href="{{ url_for('admin.manage_jobs') }}" class="btn btn-sm btn-outline-primary">Review</a>
-              </td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+    <!-- Recent Jobs Table -->
+    <div class="dash-card" data-aos="fade-up" data-aos-delay="150">
+      <div class="dash-card-header">
+        <span><i class="fas fa-clock me-2"></i>Recent Job Postings</span>
+        <a href="{{ url_for('admin.manage_jobs') }}" class="btn btn-sm btn-outline-secondary rounded-pill">Manage All</a>
+      </div>
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr><th>Title</th><th>Type</th><th>District</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+            {% for job in recent_jobs %}
+              <tr>
+                <td class="fw-semibold">{{ job.Job_role }}</td>
+                <td><span class="status-badge status-info">{{ job.job_type }}</span></td>
+                <td>{{ job.District }}</td>
+                <td>
+                  {% if job.Approved %}
+                    <span class="status-badge status-success"><i class="fas fa-circle me-1" style="font-size:.5rem;"></i>Live</span>
+                  {% elif job.rejection_reason %}
+                    <span class="status-badge status-danger"><i class="fas fa-circle me-1" style="font-size:.5rem;"></i>Rejected</span>
+                  {% else %}
+                    <span class="status-badge status-warning"><i class="fas fa-circle me-1" style="font-size:.5rem;"></i>Pending</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="{{ url_for('admin.manage_jobs') }}" class="btn btn-sm btn-outline-primary">Review</a>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="text-center py-4 text-muted">No recent jobs.</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}

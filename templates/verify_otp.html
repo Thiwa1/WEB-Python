@@ -1,34 +1,39 @@
 {% extends 'layout/base.html' %}
-{% block title %}Verify OTP – JobPortal Pro{% endblock %}
+{% block title %}Reset Password – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5 col-lg-4">
-      <div class="card shadow border-0 rounded-4">
-        <div class="card-body p-4">
-          <div class="text-center mb-4">
-            <i class="fas fa-shield-alt text-success fa-3x mb-2"></i>
-            <h4 class="fw-bold">Reset Password</h4>
-            <p class="text-muted small">Enter the OTP sent to <strong>{{ email }}</strong></p>
+<div class="auth-page">
+  <div class="auth-blob auth-blob-1"></div>
+  <div class="auth-blob auth-blob-2"></div>
+  <div class="auth-card-wrap" data-aos="fade-up">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-logo">
+          <div class="brand-icon brand-icon-lg" style="background: linear-gradient(135deg,#10b981,#059669);">
+            <i class="fas fa-shield-alt"></i>
           </div>
-          <form method="POST">
-            <input type="hidden" name="email" value="{{ email }}">
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">OTP Code</label>
-              <input type="text" name="otp" class="form-control form-control-lg text-center fw-bold"
-                     maxlength="6" placeholder="000000" required autofocus>
-            </div>
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">New Password</label>
-              <input type="password" name="new_password" class="form-control" minlength="8" required>
-            </div>
-            <button type="submit" class="btn btn-success w-100 fw-bold">Reset Password</button>
-          </form>
-          <p class="text-center mt-3 small">
-            <a href="{{ url_for('auth.forgot_password') }}">Resend OTP</a>
-          </p>
         </div>
+        <h2 class="auth-title">Reset Password</h2>
+        <p class="auth-subtitle">OTP sent to <strong style="color:var(--brand-1)">{{ email }}</strong></p>
       </div>
+      <form method="POST" class="auth-form">
+        <input type="hidden" name="email" value="{{ email }}">
+        <div class="otp-input-wrap mb-4">
+          <input type="text" name="otp" class="form-control auth-input text-center fw-bold ls-wide"
+                 maxlength="6" placeholder="000000" required autofocus
+                 style="font-size:2rem; letter-spacing:.5rem; text-align:center;">
+          <div class="small text-muted text-center mt-1">Enter the 6-digit code</div>
+        </div>
+        <div class="input-icon-wrap">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" name="new_password" class="form-control auth-input" placeholder="New password (min 8 chars)" minlength="8" required>
+        </div>
+        <button type="submit" class="btn btn-primary-grad w-100 btn-auth-submit">
+          <i class="fas fa-check me-2"></i>Reset Password
+        </button>
+      </form>
+      <p class="auth-footer-text">
+        <a href="{{ url_for('auth.forgot_password') }}" class="auth-link">Resend OTP</a>
+      </p>
     </div>
   </div>
 </div>

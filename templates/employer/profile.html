@@ -1,79 +1,101 @@
 {% extends 'layout/base.html' %}
 {% block title %}Company Profile – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employer.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0">Company Profile</h4>
-    {% if profile.employer_Verified %}<span class="badge bg-success ms-2"><i class="fas fa-check-circle me-1"></i>Verified</span>{% endif %}
-  </div>
-  <div class="row g-4">
-    <div class="col-md-4 text-center">
-      <div class="card border-0 shadow-sm p-4">
-        {% if profile.logo_path %}
-        <img src="{{ url_for('static', filename=profile.logo_path) }}" class="img-fluid rounded-circle mb-3" style="width:120px;height:120px;object-fit:cover;" alt="Logo">
-        {% else %}
-        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3" style="width:120px;height:120px;">
-          <i class="fas fa-building fa-3x text-primary"></i>
-        </div>
-        {% endif %}
-        <h5 class="fw-bold">{{ profile.employer_name or 'Company Name' }}</h5>
-        <p class="text-muted small">{{ profile.employer_address_1 or '' }}</p>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div><span>JobPortal <strong>Pro</strong></span></div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div><div class="sidebar-user-name">{{ session.full_name }}</div><div class="sidebar-user-role">Employer</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employer.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employer.post_job') }}" class="sidebar-link"><i class="fas fa-plus-circle"></i><span>Post a Job</span></a>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="sidebar-link"><i class="fas fa-list-alt"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('employer.talent_pool') }}" class="sidebar-link"><i class="fas fa-users"></i><span>Talent Pool</span></a>
+      <a href="{{ url_for('employer.profile') }}" class="sidebar-link active"><i class="fas fa-building"></i><span>Company Profile</span></a>
+      <a href="{{ url_for('employer.billing') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Billing</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Company Profile</h4>
+        <p class="dash-page-sub">
+          {% if profile.employer_Verified %}<span class="status-badge status-success me-2"><i class="fas fa-check-circle me-1"></i>Verified</span>{% endif %}
+          Keep your company info accurate to attract top candidates
+        </p>
       </div>
     </div>
-    <div class="col-md-8">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body">
-          <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Company Name</label>
-              <input type="text" name="employer_name" class="form-control" value="{{ profile.employer_name or '' }}">
-            </div>
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">Address Line 1</label>
-                <input type="text" name="employer_address_1" class="form-control" value="{{ profile.employer_address_1 or '' }}">
+    <div class="row g-4">
+      <div class="col-lg-3" data-aos="fade-right">
+        <div class="dash-card text-center p-4">
+          {% if profile.logo_path %}
+          <img src="{{ url_for('static', filename=profile.logo_path) }}" class="rounded-circle mb-3 border" style="width:110px;height:110px;object-fit:cover;" alt="Logo">
+          {% else %}
+          <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width:110px;height:110px;background:var(--gradient-1);">
+            <i class="fas fa-building fa-2x" style="color:#fff;"></i>
+          </div>
+          {% endif %}
+          <h6 class="fw-bold mb-1">{{ profile.employer_name or 'Company Name' }}</h6>
+          <p class="text-muted small">{{ profile.employer_address_1 or '' }}</p>
+        </div>
+      </div>
+      <div class="col-lg-9" data-aos="fade-left">
+        <div class="dash-card">
+          <div class="dash-card-header"><span><i class="fas fa-building me-2"></i>Company Information</span></div>
+          <div class="dash-card-body">
+            <form method="POST" enctype="multipart/form-data">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label fw-semibold small">Company Name</label>
+                  <input type="text" name="employer_name" class="form-control rounded-3" value="{{ profile.employer_name or '' }}">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold small">Address Line 1</label>
+                  <input type="text" name="employer_address_1" class="form-control rounded-3" value="{{ profile.employer_address_1 or '' }}">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold small">Address Line 2</label>
+                  <input type="text" name="employer_address_2" class="form-control rounded-3" value="{{ profile.employer_address_2 or '' }}">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label fw-semibold small">Address Line 3</label>
+                  <input type="text" name="employer_address_3" class="form-control rounded-3" value="{{ profile.employer_address_3 or '' }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Mobile</label>
+                  <input type="tel" name="employer_mobile_no" class="form-control rounded-3" value="{{ profile.employer_mobile_no or '' }}">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">WhatsApp</label>
+                  <input type="tel" name="employer_whatsapp_no" class="form-control rounded-3" value="{{ profile.employer_whatsapp_no or '' }}">
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold small">About Company</label>
+                  <textarea name="employer_about_company" class="form-control rounded-3" rows="4">{{ profile.employer_about_company or '' }}</textarea>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Company Logo</label>
+                  <input type="file" name="employer_logo" class="form-control rounded-3" accept="image/*">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Business Registration</label>
+                  <input type="file" name="employer_BR" class="form-control rounded-3" accept=".pdf,image/*">
+                </div>
               </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">Address Line 2</label>
-                <input type="text" name="employer_address_2" class="form-control" value="{{ profile.employer_address_2 or '' }}">
+              <div class="mt-4">
+                <button type="submit" class="btn btn-primary-grad px-5">
+                  <i class="fas fa-save me-2"></i>Save Profile
+                </button>
               </div>
-              <div class="col-md-4 mb-3">
-                <label class="form-label fw-semibold">Address Line 3</label>
-                <input type="text" name="employer_address_3" class="form-control" value="{{ profile.employer_address_3 or '' }}">
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Mobile</label>
-                <input type="tel" name="employer_mobile_no" class="form-control" value="{{ profile.employer_mobile_no or '' }}">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">WhatsApp</label>
-                <input type="tel" name="employer_whatsapp_no" class="form-control" value="{{ profile.employer_whatsapp_no or '' }}">
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">About Company</label>
-              <textarea name="employer_about_company" class="form-control" rows="4">{{ profile.employer_about_company or '' }}</textarea>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Company Logo <small class="text-muted">(image)</small></label>
-                <input type="file" name="employer_logo" class="form-control" accept="image/*">
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Business Registration <small class="text-muted">(PDF/image)</small></label>
-                <input type="file" name="employer_BR" class="form-control" accept=".pdf,image/*">
-              </div>
-            </div>
-            <button type="submit" class="btn btn-primary fw-bold">
-              <i class="fas fa-save me-2"></i>Save Profile
-            </button>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}

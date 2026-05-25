@@ -1,46 +1,75 @@
 {% extends 'layout/base.html' %}
 {% block title %}Settings – Admin{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0"><i class="fas fa-cog me-2 text-secondary"></i>Site Settings</h4>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-7">
-      <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-          <form method="POST">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Site Name</label>
-              <input type="text" name="site_name" class="form-control" value="{{ settings.get('site_name','JobPortal Pro') }}">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Admin Email</label>
-              <input type="email" name="admin_email" class="form-control" value="{{ settings.get('admin_email','') }}">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">VAT Rate (%)</label>
-              <input type="number" name="vat_rate" class="form-control" min="0" max="100" step="0.1"
-                     value="{{ settings.get('vat_rate','0') }}">
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold d-block">Promotional Period</label>
-              <div class="form-check form-switch">
-                <input class="form-check-input" type="checkbox" name="promo_active" value="1" id="promo-toggle"
-                       {% if settings.get('promo_active') == '1' %}checked{% endif %}>
-                <label class="form-check-label" for="promo-toggle">
-                  Enable free job posting for all employers
-                </label>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div><span>JobPortal <strong>Pro</strong></span></div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-shield-alt" style="font-size:.9rem;"></i></div>
+      <div><div class="sidebar-user-name">{{ session.full_name }}</div><div class="sidebar-user-role">Administrator</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('admin.manage_jobs') }}" class="sidebar-link"><i class="fas fa-briefcase"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('admin.approve_payments') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Approve Payments</span></a>
+      <a href="{{ url_for('admin.verify_recruiters') }}" class="sidebar-link"><i class="fas fa-check-double"></i><span>Verify Employers</span></a>
+      <a href="{{ url_for('admin.revenue_report') }}" class="sidebar-link"><i class="fas fa-chart-bar"></i><span>Revenue</span></a>
+      <a href="{{ url_for('admin.sms_panel') }}" class="sidebar-link"><i class="fas fa-sms"></i><span>SMS Panel</span></a>
+      <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link"><i class="fas fa-tags"></i><span>Categories</span></a>
+      <a href="{{ url_for('admin.manage_rates') }}" class="sidebar-link"><i class="fas fa-dollar-sign"></i><span>Rates</span></a>
+      <a href="{{ url_for('admin.bank_accounts') }}" class="sidebar-link"><i class="fas fa-university"></i><span>Bank Accounts</span></a>
+      <a href="{{ url_for('admin.manage_staff') }}" class="sidebar-link"><i class="fas fa-user-shield"></i><span>Staff</span></a>
+      <a href="{{ url_for('admin.settings') }}" class="sidebar-link active"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div><h4 class="dash-page-title">Site Settings</h4><p class="dash-page-sub">Global configuration for the platform</p></div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-lg-7" data-aos="fade-up">
+        <div class="dash-card">
+          <div class="dash-card-header"><span><i class="fas fa-cog me-2"></i>General Settings</span></div>
+          <div class="dash-card-body">
+            <form method="POST">
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">Site Name</label>
+                <input type="text" name="site_name" class="form-control rounded-3" value="{{ settings.get('site_name','JobPortal Pro') }}">
               </div>
-            </div>
-            <button type="submit" class="btn btn-primary fw-bold">
-              <i class="fas fa-save me-2"></i>Save Settings
-            </button>
-          </form>
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">Admin Email</label>
+                <input type="email" name="admin_email" class="form-control rounded-3" value="{{ settings.get('admin_email','') }}">
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold small">VAT Rate (%)</label>
+                <input type="number" name="vat_rate" class="form-control rounded-3" min="0" max="100" step="0.1"
+                       value="{{ settings.get('vat_rate','0') }}">
+              </div>
+              <div class="mb-4">
+                <label class="form-label fw-semibold small d-block mb-2">Promotional Period</label>
+                <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:var(--surface-2);border:1px solid var(--border-color);">
+                  <div class="form-check form-switch mb-0">
+                    <input class="form-check-input" type="checkbox" name="promo_active" value="1" id="promo-toggle"
+                           {% if settings.get('promo_active') == '1' %}checked{% endif %} style="width:2.5rem;height:1.25rem;">
+                  </div>
+                  <label for="promo-toggle" class="mb-0">
+                    <div class="fw-semibold small">Enable Free Job Posting</div>
+                    <div class="text-muted" style="font-size:.75rem;">All employers can post jobs for free during this period</div>
+                  </label>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary-grad px-5">
+                <i class="fas fa-save me-2"></i>Save Settings
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}

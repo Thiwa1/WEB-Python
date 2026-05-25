@@ -1,49 +1,60 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
+<nav class="navbar navbar-expand-lg sticky-top" id="mainNavbar">
   <div class="container">
-    <a class="navbar-brand fw-bold" href="{{ url_for('main.index') }}">
-      <i class="fas fa-briefcase me-2"></i>JobPortal Pro
+    <a class="navbar-brand" href="{{ url_for('main.index') }}">
+      <div class="brand-icon"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Jobs</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.paper_ads') }}">Paper Ads</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.contact') }}">Contact</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.policies') }}">Policies</a></li>
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}"><i class="fas fa-th-large me-1"></i>Jobs</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.paper_ads') }}"><i class="fas fa-newspaper me-1"></i>Paper Ads</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.contact') }}"><i class="fas fa-envelope me-1"></i>Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('main.policies') }}"><i class="fas fa-shield-alt me-1"></i>Policies</a></li>
       </ul>
-      <ul class="navbar-nav ms-auto">
+      <ul class="navbar-nav ms-auto align-items-center gap-2">
         {% if session.user_id %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-              <i class="fas fa-user-circle me-1"></i>{{ session.full_name }}
+            <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" data-bs-toggle="dropdown">
+              <span class="nav-avatar">{{ session.full_name[0] | upper }}</span>
+              <span class="d-none d-lg-inline">{{ session.full_name }}</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3 mt-2 p-2" style="min-width:220px;">
               {% set role = session.user_type | lower %}
+              <li class="px-2 pb-2 border-bottom mb-2">
+                <div class="small text-muted">Signed in as</div>
+                <div class="fw-semibold">{{ session.full_name }}</div>
+                <div class="badge rounded-pill" style="background: var(--gradient-1); font-size:0.65rem;">{{ session.user_type | capitalize }}</div>
+              </li>
               {% if role == 'employer' %}
-                <li><a class="dropdown-item" href="{{ url_for('employer.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('employer.post_job') }}"><i class="fas fa-plus me-2"></i>Post a Job</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('employer.profile') }}"><i class="fas fa-building me-2"></i>Company Profile</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('employer.billing') }}"><i class="fas fa-credit-card me-2"></i>Billing</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employer.dashboard') }}"><i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employer.post_job') }}"><i class="fas fa-plus me-2 text-success"></i>Post a Job</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employer.profile') }}"><i class="fas fa-building me-2 text-info"></i>Company Profile</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employer.billing') }}"><i class="fas fa-credit-card me-2 text-warning"></i>Billing</a></li>
               {% elif role in ('employee','seeker','candidate') %}
-                <li><a class="dropdown-item" href="{{ url_for('employee.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('employee.my_applications') }}"><i class="fas fa-file-alt me-2"></i>My Applications</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('employee.edit_profile') }}"><i class="fas fa-user-edit me-2"></i>Edit Profile</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employee.dashboard') }}"><i class="fas fa-tachometer-alt me-2 text-primary"></i>Dashboard</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employee.my_applications') }}"><i class="fas fa-file-alt me-2 text-info"></i>My Applications</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('employee.edit_profile') }}"><i class="fas fa-user-edit me-2 text-secondary"></i>Edit Profile</a></li>
               {% elif role in ('admin','paperadmin') %}
-                <li><a class="dropdown-item" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt me-2"></i>Admin Panel</a></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('admin.dashboard') }}"><i class="fas fa-shield-alt me-2 text-danger"></i>Admin Panel</a></li>
               {% endif %}
               {% if session.is_paper_admin %}
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{ url_for('admin.paper_ads') }}"><i class="fas fa-newspaper me-2"></i>Paper Ads</a></li>
+                <li><hr class="dropdown-divider my-1"></li>
+                <li><a class="dropdown-item rounded-2" href="{{ url_for('admin.paper_ads') }}"><i class="fas fa-newspaper me-2"></i>Paper Ads</a></li>
               {% endif %}
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li><a class="dropdown-item rounded-2 text-danger" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
             </ul>
           </li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
-          <li class="nav-item"><a class="btn btn-light btn-sm ms-2" href="{{ url_for('auth.register') }}">Register</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Sign In</a></li>
+          <li class="nav-item">
+            <a class="btn btn-nav-cta" href="{{ url_for('auth.register') }}">
+              <i class="fas fa-rocket me-1"></i>Get Started
+            </a>
+          </li>
         {% endif %}
       </ul>
     </div>

@@ -1,57 +1,87 @@
 {% extends 'layout/base.html' %}
 {% block title %}SMS Panel – Admin{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0"><i class="fas fa-sms me-2 text-info"></i>SMS Panel</h4>
-  </div>
-  <div class="row g-4">
-    <div class="col-md-5">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white fw-bold border-0 pt-3">Send Manual SMS</div>
-        <div class="card-body">
-          <form method="POST">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Phone Number</label>
-              <input type="tel" name="phone_number" class="form-control" placeholder="+94771234567" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Message</label>
-              <textarea name="message" class="form-control" rows="4" required maxlength="160"></textarea>
-              <div class="form-text">Max 160 characters (1 SMS unit)</div>
-            </div>
-            <button type="submit" class="btn btn-info fw-bold w-100">
-              <i class="fas fa-paper-plane me-2"></i>Send SMS
-            </button>
-          </form>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div><span>JobPortal <strong>Pro</strong></span></div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-shield-alt" style="font-size:.9rem;"></i></div>
+      <div><div class="sidebar-user-name">{{ session.full_name }}</div><div class="sidebar-user-role">Administrator</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('admin.manage_jobs') }}" class="sidebar-link"><i class="fas fa-briefcase"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('admin.approve_payments') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Approve Payments</span></a>
+      <a href="{{ url_for('admin.verify_recruiters') }}" class="sidebar-link"><i class="fas fa-check-double"></i><span>Verify Employers</span></a>
+      <a href="{{ url_for('admin.paper_ads') }}" class="sidebar-link"><i class="fas fa-newspaper"></i><span>Paper Ads</span></a>
+      <a href="{{ url_for('admin.revenue_report') }}" class="sidebar-link"><i class="fas fa-chart-bar"></i><span>Revenue</span></a>
+      <a href="{{ url_for('admin.sms_panel') }}" class="sidebar-link active"><i class="fas fa-sms"></i><span>SMS Panel</span></a>
+      <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link"><i class="fas fa-tags"></i><span>Categories</span></a>
+      <a href="{{ url_for('admin.settings') }}" class="sidebar-link"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div><h4 class="dash-page-title">SMS Panel</h4><p class="dash-page-sub">Send manual messages and view SMS logs</p></div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-5" data-aos="fade-up">
+        <div class="dash-card">
+          <div class="dash-card-header"><span><i class="fas fa-paper-plane me-2"></i>Send Manual SMS</span></div>
+          <div class="dash-card-body">
+            <form method="POST">
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Phone Number</label>
+                <input type="tel" name="phone_number" class="form-control rounded-3" placeholder="+94771234567" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Message</label>
+                <textarea name="message" class="form-control rounded-3" rows="4" required maxlength="160" id="sms-msg"
+                          oninput="document.getElementById('char-count').textContent = this.value.length"></textarea>
+                <div class="form-text d-flex justify-content-between">
+                  <span>Max 160 characters (1 SMS unit)</span>
+                  <span><span id="char-count">0</span>/160</span>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary-grad w-100">
+                <i class="fas fa-paper-plane me-2"></i>Send SMS
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-7">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white fw-bold border-0 pt-3">Recent SMS Logs</div>
-        <div class="card-body p-0">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 small">
-              <thead class="table-light"><tr><th>Phone</th><th>Job</th><th>Status</th><th>Sent At</th></tr></thead>
-              <tbody>
-              {% for log in logs %}
-                <tr>
-                  <td>{{ log.phone_number }}</td>
-                  <td>#{{ log.job_id }}</td>
-                  <td><span class="badge bg-{{ 'success' if log.status == 'Sent' else 'danger' }}">{{ log.status }}</span></td>
-                  <td>{{ log.sent_at.strftime('%d %b %H:%M') if log.sent_at else '–' }}</td>
-                </tr>
-              {% else %}
-                <tr><td colspan="4" class="text-center text-muted py-3">No SMS logs.</td></tr>
-              {% endfor %}
-              </tbody>
-            </table>
+
+      <div class="col-md-7" data-aos="fade-up" data-aos-delay="100">
+        <div class="dash-card">
+          <div class="dash-card-header"><span><i class="fas fa-history me-2"></i>Recent SMS Logs</span></div>
+          <div class="dash-card-body p-0">
+            <div class="table-responsive">
+              <table class="dash-table">
+                <thead><tr><th>Phone</th><th>Job</th><th>Status</th><th>Sent At</th></tr></thead>
+                <tbody>
+                {% for log in logs %}
+                  <tr>
+                    <td>{{ log.phone_number }}</td>
+                    <td>#{{ log.job_id }}</td>
+                    <td>
+                      <span class="status-badge {{ 'status-success' if log.status == 'Sent' else 'status-danger' }}">{{ log.status }}</span>
+                    </td>
+                    <td>{{ log.sent_at.strftime('%d %b %H:%M') if log.sent_at else '–' }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="4" class="text-center py-4 text-muted">No SMS logs yet.</td></tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}

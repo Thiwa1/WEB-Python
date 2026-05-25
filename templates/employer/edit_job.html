@@ -1,113 +1,141 @@
 {% extends 'layout/base.html' %}
 {% block title %}Edit Job – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0">Edit Job: {{ job.Job_role }}</h4>
-  </div>
-  <div class="alert alert-info"><i class="fas fa-info-circle me-2"></i>Editing will reset approval status. The job will be re-reviewed.</div>
-  <form method="POST" enctype="multipart/form-data">
-    <div class="row g-4">
-      <div class="col-lg-8">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Job Title *</label>
-              <input type="text" name="Job_role" class="form-control" value="{{ job.Job_role }}" required>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Job Type</label>
-                <select name="job_type" class="form-select">
-                  {% for t in ['Full Time','Part Time','Online','School Leaver'] %}
-                  <option value="{{ t }}" {% if job.job_type == t %}selected{% endif %}>{{ t }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Category</label>
-                <select name="Job_category" class="form-select">
-                  <option value="">– Select –</option>
-                  {% for c in categories %}
-                  <option value="{{ c.Description }}" {% if job.Job_category == c.Description %}selected{% endif %}>{{ c.Description }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Industry</label>
-              <select name="Industry" class="form-select">
-                <option value="">– Select –</option>
-                {% for i in industries %}
-                <option value="{{ i.Industry_name }}" {% if job.Industry == i.Industry_name %}selected{% endif %}>{{ i.Industry_name }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">District</label>
-                <select name="District" class="form-select" id="district-sel">
-                  <option value="">– Select –</option>
-                  {% for d in districts %}
-                  <option value="{{ d.District_name }}" {% if job.District == d.District_name %}selected{% endif %}>{{ d.District_name }}</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">City</label>
-                <select name="City" class="form-select" id="city-sel">
-                  {% if job.City %}<option value="{{ job.City }}" selected>{{ job.City }}</option>{% endif %}
-                </select>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Closing Date *</label>
-              <input type="date" name="Closing_date" class="form-control" value="{{ job.Closing_date }}" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Job Description *</label>
-              <textarea name="job_description" class="form-control" rows="8" required>{{ job.job_description }}</textarea>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Replace Job Banner <small class="text-muted">(leave blank to keep existing)</small></label>
-              {% if job.img_path %}
-              <div class="mb-2"><img src="{{ url_for('static', filename=job.img_path) }}" style="max-height:100px;" class="rounded"></div>
-              {% endif %}
-              <input type="file" name="Img" class="form-control" accept="image/*">
-            </div>
-            <div class="mt-3">
-              <h6 class="fw-semibold">Application Methods</h6>
-              <div class="form-check mb-2">
-                <input class="form-check-input" type="checkbox" name="Apply_by_system" value="1" {% if job.Apply_by_system %}checked{% endif %}>
-                <label class="form-check-label">Via portal</label>
-              </div>
-              <div class="form-check mb-2">
-                <input class="form-check-input" type="checkbox" name="Apply_by_email" value="1" {% if job.Apply_by_email %}checked{% endif %}>
-                <label class="form-check-label">Via Email</label>
-              </div>
-              <input type="email" name="Apply_by_email_address" class="form-control mb-2" value="{{ job.Apply_by_email_address or '' }}" placeholder="HR email">
-              <div class="form-check mb-2">
-                <input class="form-check-input" type="checkbox" name="apply_WhatsApp" value="1" {% if job.apply_WhatsApp %}checked{% endif %}>
-                <label class="form-check-label">Via WhatsApp</label>
-              </div>
-              <input type="tel" name="apply_WhatsApp_No" class="form-control" value="{{ job.apply_WhatsApp_No or '' }}" placeholder="WhatsApp number">
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
-          <div class="card-body">
-            <button type="submit" class="btn btn-primary w-100 fw-bold">
-              <i class="fas fa-save me-2"></i>Save Changes
-            </button>
-            <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary w-100 mt-2">Cancel</a>
-          </div>
-        </div>
-      </div>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div><span>JobPortal <strong>Pro</strong></span></div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div><div class="sidebar-user-name">{{ session.full_name }}</div><div class="sidebar-user-role">Employer</div></div>
     </div>
-  </form>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employer.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employer.post_job') }}" class="sidebar-link"><i class="fas fa-plus-circle"></i><span>Post a Job</span></a>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="sidebar-link active"><i class="fas fa-list-alt"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('employer.talent_pool') }}" class="sidebar-link"><i class="fas fa-users"></i><span>Talent Pool</span></a>
+      <a href="{{ url_for('employer.profile') }}" class="sidebar-link"><i class="fas fa-building"></i><span>Company Profile</span></a>
+      <a href="{{ url_for('employer.billing') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Billing</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Edit Job</h4>
+        <p class="dash-page-sub">{{ job.Job_role }}</p>
+      </div>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary rounded-pill px-4">
+        <i class="fas fa-arrow-left me-2"></i>Back
+      </a>
+    </div>
+
+    <div class="alert-banner alert-banner-info mb-4" data-aos="fade-up">
+      <i class="fas fa-info-circle"></i>
+      <div>Editing will <strong>reset approval status</strong>. The job will be re-reviewed by admin before going live.</div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="dash-card mb-4" data-aos="fade-up">
+            <div class="dash-card-header"><span><i class="fas fa-pen me-2"></i>Job Details</span></div>
+            <div class="dash-card-body">
+              <div class="mb-3">
+                <label class="form-label fw-semibold small">Job Title *</label>
+                <input type="text" name="Job_role" class="form-control rounded-3" value="{{ job.Job_role }}" required>
+              </div>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Job Type</label>
+                  <select name="job_type" class="form-select rounded-3">
+                    {% for t in ['Full Time','Part Time','Online','School Leaver'] %}
+                    <option value="{{ t }}" {% if job.job_type == t %}selected{% endif %}>{{ t }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">Category</label>
+                  <select name="Job_category" class="form-select rounded-3">
+                    <option value="">– Select –</option>
+                    {% for c in categories %}
+                    <option value="{{ c.Description }}" {% if job.Job_category == c.Description %}selected{% endif %}>{{ c.Description }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold small">Industry</label>
+                  <select name="Industry" class="form-select rounded-3">
+                    <option value="">– Select –</option>
+                    {% for i in industries %}
+                    <option value="{{ i.Industry_name }}" {% if job.Industry == i.Industry_name %}selected{% endif %}>{{ i.Industry_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">District</label>
+                  <select name="District" class="form-select rounded-3" id="district-sel">
+                    <option value="">– Select –</option>
+                    {% for d in districts %}
+                    <option value="{{ d.District_name }}" {% if job.District == d.District_name %}selected{% endif %}>{{ d.District_name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold small">City</label>
+                  <select name="City" class="form-select rounded-3" id="city-sel">
+                    {% if job.City %}<option value="{{ job.City }}" selected>{{ job.City }}</option>{% endif %}
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label fw-semibold small">Closing Date *</label>
+                  <input type="date" name="Closing_date" class="form-control rounded-3" value="{{ job.Closing_date }}" required>
+                </div>
+              </div>
+              <div class="mt-3">
+                <label class="form-label fw-semibold small">Job Description *</label>
+                <textarea name="job_description" class="form-control rounded-3" rows="8" required>{{ job.job_description }}</textarea>
+              </div>
+              <div class="mt-3">
+                <label class="form-label fw-semibold small">Replace Banner <span class="text-muted">(leave blank to keep existing)</span></label>
+                {% if job.img_path %}
+                <div class="mb-2"><img src="{{ url_for('static', filename=job.img_path) }}" style="max-height:80px;" class="rounded-3"></div>
+                {% endif %}
+                <input type="file" name="Img" class="form-control rounded-3" accept="image/*">
+              </div>
+              <div class="mt-4">
+                <h6 class="fw-bold small mb-3">Application Methods</h6>
+                <div class="form-check custom-check mb-2">
+                  <input class="form-check-input" type="checkbox" name="Apply_by_system" value="1" {% if job.Apply_by_system %}checked{% endif %}>
+                  <label class="form-check-label">Via portal</label>
+                </div>
+                <div class="form-check custom-check mb-2">
+                  <input class="form-check-input" type="checkbox" name="Apply_by_email" value="1" {% if job.Apply_by_email %}checked{% endif %}>
+                  <label class="form-check-label">Via Email</label>
+                </div>
+                <input type="email" name="Apply_by_email_address" class="form-control rounded-3 mb-3 ms-4" style="max-width:300px;" value="{{ job.Apply_by_email_address or '' }}" placeholder="HR email">
+                <div class="form-check custom-check mb-2">
+                  <input class="form-check-input" type="checkbox" name="apply_WhatsApp" value="1" {% if job.apply_WhatsApp %}checked{% endif %}>
+                  <label class="form-check-label">Via WhatsApp</label>
+                </div>
+                <input type="tel" name="apply_WhatsApp_No" class="form-control rounded-3 ms-4" style="max-width:300px;" value="{{ job.apply_WhatsApp_No or '' }}" placeholder="WhatsApp number">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4" data-aos="fade-left">
+          <div class="dash-card">
+            <div class="dash-card-body">
+              <button type="submit" class="btn btn-primary-grad w-100 mb-2">
+                <i class="fas fa-save me-2"></i>Save Changes
+              </button>
+              <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary w-100 rounded-pill">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </main>
 </div>
 {% endblock %}
 {% block scripts %}
@@ -119,8 +147,7 @@ document.getElementById('district-sel').addEventListener('change', function() {
   fetch(`/get-cities?district=${encodeURIComponent(this.value)}`)
     .then(r => r.json())
     .then(cities => cities.forEach(c => {
-      const o = document.createElement('option');
-      o.value = c.name; o.textContent = c.name;
+      const o = document.createElement('option'); o.value = c.name; o.textContent = c.name;
       cityEl.appendChild(o);
     }));
 });

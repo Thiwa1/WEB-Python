@@ -1,61 +1,81 @@
 {% extends 'layout/base.html' %}
 {% block title %}Talent Pool – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employer.dashboard') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <h4 class="fw-bold mb-0"><i class="fas fa-users me-2 text-success"></i>Talent Pool</h4>
-  </div>
-  <p class="text-muted">Job seekers who have promoted themselves and are open to opportunities.</p>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div><span>JobPortal <strong>Pro</strong></span></div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div><div class="sidebar-user-name">{{ session.full_name }}</div><div class="sidebar-user-role">Employer</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employer.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employer.post_job') }}" class="sidebar-link"><i class="fas fa-plus-circle"></i><span>Post a Job</span></a>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="sidebar-link"><i class="fas fa-list-alt"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('employer.talent_pool') }}" class="sidebar-link active"><i class="fas fa-users"></i><span>Talent Pool</span></a>
+      <a href="{{ url_for('employer.profile') }}" class="sidebar-link"><i class="fas fa-building"></i><span>Company Profile</span></a>
+      <a href="{{ url_for('employer.billing') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Billing</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Talent Pool</h4>
+        <p class="dash-page-sub">Job seekers open to new opportunities — {{ offers|length }} profile{{ 's' if offers|length != 1 }}</p>
+      </div>
+    </div>
 
-  <div class="row g-3">
-  {% for offer, seeker, user in offers %}
-    <div class="col-md-6 col-lg-4">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body">
-          <div class="d-flex align-items-center gap-3 mb-3">
+    {% if offers %}
+    <div class="row g-4">
+      {% for offer, seeker, user in offers %}
+      <div class="col-md-6 col-xl-4" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 60 if loop.index0 < 6 else 0 }}">
+        <div class="talent-card">
+          <div class="talent-card-top">
             {% if seeker.img_path %}
-            <img src="{{ url_for('static', filename=seeker.img_path) }}" class="rounded-circle" style="width:50px;height:50px;object-fit:cover;" alt="">
+            <img src="{{ url_for('static', filename=seeker.img_path) }}" class="talent-avatar rounded-circle" alt="">
             {% else %}
-            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
-              <i class="fas fa-user text-primary"></i>
-            </div>
+            <div class="talent-avatar talent-avatar-placeholder">{{ (seeker.employee_full_name or user.full_name)[0] | upper }}</div>
             {% endif %}
             <div>
-              <div class="fw-bold">{{ seeker.employee_full_name or user.full_name }}</div>
-              <div class="small text-muted">{{ offer.experience_years }} yr{{ 's' if offer.experience_years != 1 }} exp</div>
+              <div class="talent-name">{{ seeker.employee_full_name or user.full_name }}</div>
+              <div class="talent-exp">{{ offer.experience_years }} yr{{ 's' if offer.experience_years != 1 }} experience</div>
             </div>
           </div>
-          <h6 class="fw-bold text-primary">{{ offer.headline }}</h6>
+          <h6 class="talent-headline">{{ offer.headline }}</h6>
           {% if offer.skills_tags %}
-          <div class="mb-2">
-            {% for skill in offer.skills_tags.split(',') %}
-            <span class="badge bg-light text-dark border me-1 mb-1">{{ skill.strip() }}</span>
+          <div class="talent-skills">
+            {% for skill in offer.skills_tags.split(',')[:5] %}
+            <span class="talent-skill-tag">{{ skill.strip() }}</span>
             {% endfor %}
           </div>
           {% endif %}
           {% if offer.expected_salary %}
-          <div class="small text-muted mb-2"><i class="fas fa-money-bill me-1"></i>Expected: LKR {{ "{:,.0f}".format(offer.expected_salary) }}/mo</div>
+          <div class="talent-salary">
+            <i class="fas fa-money-bill-wave me-1"></i>LKR {{ "{:,.0f}".format(offer.expected_salary) }}/month
+          </div>
           {% endif %}
           {% if offer.description %}
-          <p class="small text-muted mb-2">{{ offer.description[:120] }}{% if offer.description|length > 120 %}…{% endif %}</p>
+          <p class="talent-desc">{{ offer.description[:120] }}{% if offer.description|length > 120 %}…{% endif %}</p>
           {% endif %}
-          <div class="small text-muted">Expires: {{ offer.expiry_date.strftime('%d %b %Y') if offer.expiry_date else '–' }}</div>
-        </div>
-        <div class="card-footer bg-white border-0 pt-0">
-          <a href="mailto:{{ user.user_email }}" class="btn btn-sm btn-outline-primary w-100">
-            <i class="fas fa-envelope me-1"></i>Contact
-          </a>
+          <div class="talent-footer">
+            <span class="small text-muted"><i class="far fa-calendar me-1"></i>Expires {{ offer.expiry_date.strftime('%d %b %Y') if offer.expiry_date else '–' }}</span>
+            <a href="mailto:{{ user.user_email }}" class="btn btn-sm btn-primary-grad rounded-pill px-3">
+              <i class="fas fa-envelope me-1"></i>Contact
+            </a>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-  {% else %}
-    <div class="col-12 text-center py-5 text-muted">
-      <i class="fas fa-users fa-3x mb-3"></i>
+    {% else %}
+    <div class="empty-state" data-aos="fade-up">
+      <div class="empty-icon"><i class="fas fa-users"></i></div>
       <h5>No talent profiles available</h5>
       <p>Job seekers who promote themselves will appear here.</p>
     </div>
-  {% endfor %}
-  </div>
+    {% endif %}
+  </main>
 </div>
 {% endblock %}

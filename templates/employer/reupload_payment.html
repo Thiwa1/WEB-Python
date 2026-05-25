@@ -1,28 +1,40 @@
 {% extends 'layout/base.html' %}
 {% block title %}Re-upload Payment – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-md-5">
-      <div class="card border-0 shadow-sm">
-        <div class="card-header bg-warning text-dark fw-bold">Re-upload Payment Slip</div>
-        <div class="card-body p-4">
-          <p class="text-muted small mb-3">Payment #{{ payment.id }} was rejected. Please upload a corrected payment slip.</p>
-          {% if payment.Reject_comment %}
-          <div class="alert alert-danger small"><strong>Rejection reason:</strong> {{ payment.Reject_comment }}</div>
-          {% endif %}
-          <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">New Payment Slip *</label>
-              <input type="file" name="payment_slip" class="form-control" accept="image/*,.pdf" required>
-            </div>
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-warning fw-bold">Upload Slip</button>
-              <a href="{{ url_for('employer.billing') }}" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-          </form>
+<div class="auth-page">
+  <div class="auth-blob auth-blob-1"></div>
+  <div class="auth-blob auth-blob-2"></div>
+  <div class="auth-card-wrap" data-aos="fade-up">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-logo">
+          <div class="brand-icon brand-icon-lg" style="background:linear-gradient(135deg,#f59e0b,#d97706);">
+            <i class="fas fa-receipt"></i>
+          </div>
         </div>
+        <h2 class="auth-title">Re-upload Payment</h2>
+        <p class="auth-subtitle">Payment #{{ payment.id }} was rejected. Upload a corrected payment slip.</p>
       </div>
+
+      {% if payment.Reject_comment %}
+      <div class="alert-banner alert-banner-danger mb-4">
+        <i class="fas fa-exclamation-circle"></i>
+        <div><strong>Rejection reason:</strong> {{ payment.Reject_comment }}</div>
+      </div>
+      {% endif %}
+
+      <form method="POST" enctype="multipart/form-data" class="auth-form">
+        <div class="input-icon-wrap">
+          <i class="fas fa-image input-icon"></i>
+          <input type="file" name="payment_slip" class="form-control auth-input" accept="image/*,.pdf" required>
+        </div>
+        <div class="small text-muted mb-4" style="margin-top:-12px;padding-left:48px;">Payment slip (image or PDF) *</div>
+
+        <button type="submit" class="btn btn-primary-grad w-100 btn-auth-submit">
+          <i class="fas fa-upload me-2"></i>Upload Slip
+        </button>
+        <a href="{{ url_for('employer.billing') }}" class="btn btn-outline-secondary w-100 mt-2 rounded-pill">Cancel</a>
+      </form>
     </div>
   </div>
 </div>

@@ -1,5 +1,5 @@
 {% extends 'layout/base.html' %}
-{% block title %}Login – JobPortal Pro{% endblock %}
+{% block title %}Sign In – JobPortal Pro{% endblock %}
 
 {% block head %}
 {% if recaptcha_site_key %}
@@ -8,61 +8,67 @@
 {% endblock %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-5 col-lg-4">
-      <div class="card shadow border-0 rounded-4">
-        <div class="card-body p-4">
-          <div class="text-center mb-4">
-            <i class="fas fa-briefcase text-primary fa-3x mb-2"></i>
-            <h4 class="fw-bold">Welcome Back</h4>
-            <p class="text-muted small">Sign in to your account</p>
-          </div>
+<div class="auth-page">
+  <div class="auth-blob auth-blob-1"></div>
+  <div class="auth-blob auth-blob-2"></div>
 
-          <form method="POST" action="{{ url_for('auth.login') }}" id="login-form">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
-            <input type="hidden" name="recaptcha_token" id="recaptcha_token">
-
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Email Address</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-envelope text-muted"></i></span>
-                <input type="email" name="user_email" class="form-control" placeholder="you@email.com" required autofocus>
-              </div>
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label small fw-semibold">Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="fas fa-lock text-muted"></i></span>
-                <input type="password" name="user_password" class="form-control" id="password-field" placeholder="••••••••" required>
-                <button class="btn btn-outline-secondary" type="button" id="toggle-pwd">
-                  <i class="fas fa-eye" id="pwd-icon"></i>
-                </button>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between mb-3">
-              <a href="{{ url_for('auth.forgot_password') }}" class="small text-muted">Forgot password?</a>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100 fw-bold" id="login-btn">
-              <i class="fas fa-sign-in-alt me-2"></i>Sign In
-            </button>
-          </form>
-
-          {% if google_url %}
-          <hr class="my-3">
-          <a href="{{ google_url }}" class="btn btn-outline-danger w-100">
-            <i class="fab fa-google me-2"></i>Sign in with Google
-          </a>
-          {% endif %}
-
-          <p class="text-center mt-3 small text-muted">
-            Don't have an account? <a href="{{ url_for('auth.register') }}" class="fw-semibold">Register</a>
-          </p>
+  <div class="auth-card-wrap" data-aos="fade-up">
+    <div class="auth-card">
+      <div class="auth-card-header">
+        <div class="auth-logo">
+          <div class="brand-icon brand-icon-lg"><i class="fas fa-briefcase"></i></div>
         </div>
+        <h2 class="auth-title">Welcome Back</h2>
+        <p class="auth-subtitle">Sign in to your JobPortal Pro account</p>
       </div>
+
+      <form method="POST" action="{{ url_for('auth.login') }}" id="login-form" class="auth-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="recaptcha_token" id="recaptcha_token">
+
+        <div class="input-icon-wrap">
+          <i class="fas fa-envelope input-icon"></i>
+          <input type="email" name="user_email" class="form-control auth-input" placeholder="Email address" required autofocus>
+        </div>
+
+        <div class="input-icon-wrap">
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" name="user_password" class="form-control auth-input" id="password-field" placeholder="Password" required>
+          <button type="button" class="input-toggle-btn" id="toggle-pwd">
+            <i class="fas fa-eye" id="pwd-icon"></i>
+          </button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="form-check mb-0">
+            <input type="checkbox" class="form-check-input" id="remember">
+            <label class="form-check-label small text-muted" for="remember">Remember me</label>
+          </div>
+          <a href="{{ url_for('auth.forgot_password') }}" class="auth-link small">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary-grad w-100 btn-auth-submit" id="login-btn">
+          <i class="fas fa-sign-in-alt me-2"></i>Sign In
+        </button>
+      </form>
+
+      {% if google_url %}
+      <div class="auth-divider"><span>or continue with</span></div>
+      <a href="{{ google_url }}" class="btn btn-google w-100">
+        <svg width="18" height="18" viewBox="0 0 18 18" class="me-2">
+          <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z"/>
+          <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/>
+          <path fill="#FBBC05" d="M3.964 10.707c-.18-.54-.282-1.117-.282-1.707s.102-1.167.282-1.707V4.961H.957C.347 6.175 0 7.55 0 9s.348 2.825.957 4.039l3.007-2.332z"/>
+          <path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.961L3.964 7.293C4.672 5.166 6.656 3.58 9 3.58z"/>
+        </svg>
+        Sign in with Google
+      </a>
+      {% endif %}
+
+      <p class="auth-footer-text">
+        Don't have an account?
+        <a href="{{ url_for('auth.register') }}" class="auth-link fw-semibold">Create one free</a>
+      </p>
     </div>
   </div>
 </div>
@@ -76,7 +82,6 @@ document.getElementById('toggle-pwd').addEventListener('click', function() {
   if (f.type === 'password') { f.type = 'text'; i.classList.replace('fa-eye','fa-eye-slash'); }
   else { f.type = 'password'; i.classList.replace('fa-eye-slash','fa-eye'); }
 });
-
 {% if recaptcha_site_key %}
 document.getElementById('login-form').addEventListener('submit', function(e) {
   e.preventDefault();

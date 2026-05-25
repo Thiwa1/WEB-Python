@@ -1,94 +1,125 @@
 {% extends 'layout/base.html' %}
 {% block title %}Applications – {{ job.Job_role }} – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex align-items-center mb-4 gap-3">
-    <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary btn-sm"><i class="fas fa-arrow-left"></i></a>
-    <div>
-      <h4 class="fw-bold mb-0">Applications for: {{ job.Job_role }}</h4>
-      <small class="text-muted">{{ registered|length + guests|length }} total applications</small>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
     </div>
-  </div>
-
-  <!-- Registered Applicants -->
-  <div class="card border-0 shadow-sm mb-4">
-    <div class="card-header bg-primary text-white fw-bold">
-      <i class="fas fa-user-check me-2"></i>Registered Applicants ({{ registered|length }})
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr><th>Name</th><th>Email</th><th>Applied</th><th>Status</th><th>CV</th><th>Action</th></tr>
-          </thead>
-          <tbody>
-          {% for app, seeker, user in registered %}
-            <tr>
-              <td class="fw-semibold">{{ seeker.employee_full_name or user.full_name }}</td>
-              <td>{{ user.user_email }}</td>
-              <td>{{ app.applied_date.strftime('%d %b %Y') if app.applied_date else '–' }}</td>
-              <td>
-                <span class="badge bg-{{ 'success' if app.application_status=='Accepted' else 'danger' if app.application_status=='Rejected' else 'warning text-dark' }}">
-                  {{ app.application_status }}
-                </span>
-              </td>
-              <td>
-                {% if seeker.cv_path %}
-                <a href="{{ url_for('static', filename=seeker.cv_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fas fa-file-pdf"></i></a>
-                {% else %}–{% endif %}
-              </td>
-              <td>
-                <form method="POST" action="{{ url_for('employer.update_application_status', app_id=app.id) }}" class="d-flex gap-1">
-                  <select name="status" class="form-select form-select-sm" style="width:auto;">
-                    {% for s in ['Pending','Shortlisted','Accepted','Rejected'] %}
-                    <option value="{{ s }}" {% if app.application_status==s %}selected{% endif %}>{{ s }}</option>
-                    {% endfor %}
-                  </select>
-                  <button class="btn btn-sm btn-primary">Update</button>
-                </form>
-              </td>
-            </tr>
-          {% else %}
-            <tr><td colspan="6" class="text-center text-muted py-3">No registered applicants yet.</td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Employer</div>
       </div>
     </div>
-  </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employer.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employer.post_job') }}" class="sidebar-link"><i class="fas fa-plus-circle"></i><span>Post a Job</span></a>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="sidebar-link active"><i class="fas fa-list-alt"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('employer.talent_pool') }}" class="sidebar-link"><i class="fas fa-users"></i><span>Talent Pool</span></a>
+      <a href="{{ url_for('employer.profile') }}" class="sidebar-link"><i class="fas fa-building"></i><span>Company Profile</span></a>
+      <a href="{{ url_for('employer.billing') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Billing</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
 
-  <!-- Guest Applicants -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-secondary text-white fw-bold">
-      <i class="fas fa-user me-2"></i>Guest Applicants ({{ guests|length }})
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">Applications: {{ job.Job_role }}</h4>
+        <p class="dash-page-sub">{{ registered|length + guests|length }} total applicant{{ 's' if (registered|length + guests|length) != 1 }}</p>
+      </div>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="btn btn-outline-secondary rounded-pill px-4">
+        <i class="fas fa-arrow-left me-2"></i>Back
+      </a>
     </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr><th>Name</th><th>Contact</th><th>Gender</th><th>Applied</th><th>Status</th><th>CV</th></tr>
-          </thead>
-          <tbody>
-          {% for g in guests %}
-            <tr>
-              <td class="fw-semibold">{{ g.guest_full_name }}</td>
-              <td>{{ g.guest_contact_no }}</td>
-              <td>{{ g.guest_gender }}</td>
-              <td>{{ g.applied_date.strftime('%d %b %Y') if g.applied_date else '–' }}</td>
-              <td><span class="badge bg-warning text-dark">{{ g.application_status }}</span></td>
-              <td>
-                {% if g.cv_path %}
-                <a href="{{ url_for('static', filename=g.cv_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fas fa-file-pdf"></i></a>
-                {% else %}–{% endif %}
-              </td>
-            </tr>
-          {% else %}
-            <tr><td colspan="6" class="text-center text-muted py-3">No guest applicants yet.</td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
+
+    <!-- Registered Applicants -->
+    <div class="dash-card mb-4" data-aos="fade-up">
+      <div class="dash-card-header">
+        <span><i class="fas fa-user-check me-2"></i>Registered Applicants <span class="ms-1 badge rounded-pill" style="background:var(--gradient-1);font-size:.75rem;">{{ registered|length }}</span></span>
+      </div>
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Applied</th><th>Status</th><th>CV</th><th>Update Status</th></tr>
+            </thead>
+            <tbody>
+            {% for app, seeker, user in registered %}
+              <tr>
+                <td class="fw-semibold">{{ seeker.employee_full_name or user.full_name }}</td>
+                <td>{{ user.user_email }}</td>
+                <td>{{ app.applied_date.strftime('%d %b %Y') if app.applied_date else '–' }}</td>
+                <td>
+                  {% set s = app.application_status %}
+                  <span class="status-badge status-{{ 'success' if s=='Accepted' else 'danger' if s=='Rejected' else 'warning' if s=='Shortlisted' else 'info' }}">{{ s }}</span>
+                </td>
+                <td>
+                  {% if seeker.cv_path %}
+                  <a href="{{ url_for('static', filename=seeker.cv_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    <i class="fas fa-file-pdf me-1"></i>CV
+                  </a>
+                  {% else %}–{% endif %}
+                </td>
+                <td>
+                  <form method="POST" action="{{ url_for('employer.update_application_status', app_id=app.id) }}" class="d-flex gap-2">
+                    <select name="status" class="form-select form-select-sm rounded-pill" style="width:130px;">
+                      {% for s in ['Pending','Shortlisted','Accepted','Rejected'] %}
+                      <option value="{{ s }}" {% if app.application_status==s %}selected{% endif %}>{{ s }}</option>
+                      {% endfor %}
+                    </select>
+                    <button class="btn btn-sm btn-primary-grad rounded-pill px-3">Save</button>
+                  </form>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="6" class="text-center text-muted py-4">No registered applicants yet.</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+
+    <!-- Guest Applicants -->
+    <div class="dash-card" data-aos="fade-up" data-aos-delay="100">
+      <div class="dash-card-header">
+        <span><i class="fas fa-user me-2"></i>Guest Applicants <span class="ms-1 badge rounded-pill bg-secondary" style="font-size:.75rem;">{{ guests|length }}</span></span>
+      </div>
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr><th>Name</th><th>Contact</th><th>Gender</th><th>Applied</th><th>Status</th><th>CV</th></tr>
+            </thead>
+            <tbody>
+            {% for g in guests %}
+              <tr>
+                <td class="fw-semibold">{{ g.guest_full_name }}</td>
+                <td>{{ g.guest_contact_no }}</td>
+                <td>{{ g.guest_gender }}</td>
+                <td>{{ g.applied_date.strftime('%d %b %Y') if g.applied_date else '–' }}</td>
+                <td><span class="status-badge status-warning">{{ g.application_status }}</span></td>
+                <td>
+                  {% if g.cv_path %}
+                  <a href="{{ url_for('static', filename=g.cv_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    <i class="fas fa-file-pdf me-1"></i>CV
+                  </a>
+                  {% else %}–{% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="6" class="text-center text-muted py-4">No guest applicants yet.</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 {% endblock %}

@@ -2,147 +2,154 @@
 {% block title %}Find Your Dream Job – JobPortal Pro{% endblock %}
 
 {% block content %}
-<!-- Hero -->
-<section class="bg-primary text-white py-5">
-  <div class="container text-center">
-    <h1 class="display-5 fw-bold mb-2">Find Your Dream Job</h1>
-    <p class="lead mb-4">Connecting talent with employers across Sri Lanka</p>
-    <form method="GET" action="{{ url_for('main.index') }}" class="row g-2 justify-content-center">
-      <div class="col-md-4 col-sm-12">
-        <input type="text" name="keyword" class="form-control form-control-lg" placeholder="Job title or keyword" value="{{ keyword }}">
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero-section">
+  <div class="hero-blob blob-1"></div>
+  <div class="hero-blob blob-2"></div>
+  <div class="hero-blob blob-3"></div>
+
+  <div class="container hero-inner">
+    <div class="text-center" data-aos="fade-up">
+      <div class="hero-eyebrow">
+        <i class="fas fa-fire me-1"></i> Sri Lanka's #1 Job Platform
       </div>
-      <div class="col-md-2 col-sm-6">
-        <select name="district" class="form-select form-select-lg" id="district-select">
-          <option value="">All Districts</option>
-          {% for d in districts %}
-            <option value="{{ d.District_name }}" {% if district_filter == d.District_name %}selected{% endif %}>{{ d.District_name }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-2 col-sm-6">
-        <select name="city" class="form-select form-select-lg" id="city-select">
-          <option value="">All Cities</option>
-          {% if city_filter %}
-            <option value="{{ city_filter }}" selected>{{ city_filter }}</option>
-          {% endif %}
-        </select>
-      </div>
-      <div class="col-md-2 col-sm-12">
-        <button type="submit" class="btn btn-light btn-lg w-100 fw-bold">
-          <i class="fas fa-search me-1"></i>Search
+      <h1 class="hero-title">
+        Find Your <span class="gradient-text">Dream Job</span><br>Start Today
+      </h1>
+      <p class="hero-subtitle">
+        Thousands of opportunities from verified employers across Sri Lanka.<br>
+        Full-time, part-time, remote — your next career move starts here.
+      </p>
+    </div>
+
+    <!-- Search Box -->
+    <div class="hero-search-box" data-aos="fade-up" data-aos-delay="150">
+      <form method="GET" action="{{ url_for('main.index') }}" class="hero-search-form">
+        <div class="search-field">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" name="keyword" class="search-input" placeholder="Job title or keyword…" value="{{ keyword }}">
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-field">
+          <i class="fas fa-map-marker-alt search-icon"></i>
+          <select name="district" class="search-input" id="district-select" style="cursor:pointer;">
+            <option value="">All Districts</option>
+            {% for d in districts %}
+              <option value="{{ d.District_name }}" {% if district_filter == d.District_name %}selected{% endif %}>{{ d.District_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="search-divider d-none d-md-block"></div>
+        <div class="search-field d-none d-md-flex">
+          <i class="fas fa-city search-icon"></i>
+          <select name="city" class="search-input" id="city-select" style="cursor:pointer;">
+            <option value="">All Cities</option>
+            {% if city_filter %}
+              <option value="{{ city_filter }}" selected>{{ city_filter }}</option>
+            {% endif %}
+          </select>
+        </div>
+        <button type="submit" class="btn-search-hero">
+          <i class="fas fa-search me-2"></i>Search Jobs
         </button>
-      </div>
-    </form>
-  </div>
-</section>
+      </form>
+    </div>
 
-<!-- Stats Bar -->
-<section class="bg-white border-bottom py-3">
-  <div class="container">
-    <div class="row text-center g-2">
-      {% for label, count in [('Full Time', job_type_counts['Full Time']), ('Part Time', job_type_counts['Part Time']), ('Online', job_type_counts['Online']), ('School Leaver', job_type_counts['School Leaver'])] %}
-      <div class="col-6 col-md-2">
-        <div class="p-2 rounded bg-light">
-          <div class="fw-bold text-primary fs-5">{{ "{:,}".format(count) }}</div>
-          <div class="small text-muted">{{ label }}</div>
-        </div>
+    <!-- Hero Stats -->
+    <div class="hero-stats" data-aos="fade-up" data-aos-delay="250">
+      <div class="hero-stat">
+        <span class="hero-stat-num">{{ "{:,}".format(job_type_counts['Full Time']) }}</span>
+        <span class="hero-stat-label">Full Time</span>
       </div>
-      {% endfor %}
-      <div class="col-6 col-md-2">
-        <div class="p-2 rounded bg-light">
-          <div class="fw-bold text-success fs-5">{{ "{:,}".format(total_seekers) }}</div>
-          <div class="small text-muted">Job Seekers</div>
-        </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">{{ "{:,}".format(job_type_counts['Part Time']) }}</span>
+        <span class="hero-stat-label">Part Time</span>
       </div>
-      <div class="col-6 col-md-2">
-        <div class="p-2 rounded bg-light">
-          <div class="fw-bold text-warning fs-5">{{ "{:,}".format(total_employers) }}</div>
-          <div class="small text-muted">Employers</div>
-        </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">{{ "{:,}".format(total_seekers) }}</span>
+        <span class="hero-stat-label">Job Seekers</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num">{{ "{:,}".format(total_employers) }}</span>
+        <span class="hero-stat-label">Employers</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Services Banner -->
-<section class="bg-light py-3 border-bottom">
+<!-- ═══════════════════ FEATURE BADGES ═══════════════════ -->
+<section class="feature-strip py-4">
   <div class="container">
-    <div class="row text-center g-3">
-      <div class="col-6 col-md-2">
-        <i class="fas fa-star text-warning fs-4"></i>
-        <div class="small mt-1">Talent Promotion</div>
+    <div class="feature-badges-row" data-aos="fade-up">
+      <div class="feature-badge"><i class="fas fa-star"></i> Talent Promotion</div>
+      <div class="feature-badge"><i class="fas fa-bell"></i> SMS Job Alerts</div>
+      <div class="feature-badge"><i class="fas fa-newspaper"></i>
+        <a href="{{ url_for('main.paper_ads') }}" class="text-decoration-none text-inherit">Paper Advertising</a>
       </div>
-      <div class="col-6 col-md-2">
-        <i class="fas fa-bell text-primary fs-4"></i>
-        <div class="small mt-1">SMS Job Alerts</div>
-      </div>
-      <div class="col-6 col-md-2">
-        <i class="fas fa-newspaper text-success fs-4"></i>
-        <div class="small mt-1"><a href="{{ url_for('main.paper_ads') }}" class="text-decoration-none">Paper Advertising</a></div>
-      </div>
-      <div class="col-6 col-md-2">
-        <i class="fas fa-user-tie text-info fs-4"></i>
-        <div class="small mt-1">Guest Applications</div>
-      </div>
-      <div class="col-6 col-md-2">
-        <i class="fas fa-robot text-danger fs-4"></i>
-        <div class="small mt-1">AI CV Scoring</div>
-      </div>
-      <div class="col-6 col-md-2">
-        <i class="fas fa-shield-alt text-secondary fs-4"></i>
-        <div class="small mt-1">Verified Employers</div>
-      </div>
+      <div class="feature-badge"><i class="fas fa-user-tie"></i> Guest Applications</div>
+      <div class="feature-badge"><i class="fas fa-robot"></i> AI CV Scoring</div>
+      <div class="feature-badge"><i class="fas fa-shield-alt"></i> Verified Employers</div>
     </div>
   </div>
 </section>
 
-<!-- Main Content -->
-<section class="py-4">
+<!-- ═══════════════════ JOB LISTINGS + FILTERS ═══════════════════ -->
+<section class="section-jobs py-5">
   <div class="container">
-    <div class="row">
+    <div class="row g-4">
+
       <!-- Sidebar Filters -->
-      <div class="col-md-3 d-none d-md-block">
-        <div class="card shadow-sm">
-          <div class="card-header bg-primary text-white fw-bold">
-            <i class="fas fa-filter me-2"></i>Filter Jobs
+      <div class="col-lg-3 d-none d-lg-block">
+        <div class="filter-card" data-aos="fade-right">
+          <div class="filter-card-header">
+            <i class="fas fa-sliders-h me-2"></i>Filter Jobs
           </div>
-          <div class="card-body p-2">
+          <div class="filter-card-body">
             <form method="GET" action="{{ url_for('main.index') }}">
               <input type="hidden" name="keyword" value="{{ keyword }}">
               <input type="hidden" name="district" value="{{ district_filter }}">
               <input type="hidden" name="city" value="{{ city_filter }}">
 
-              <p class="fw-semibold mb-1 small">Job Type</p>
-              {% for jt in ['Full Time','Part Time','Online','School Leaver'] %}
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="job_type" value="{{ jt }}"
-                  id="jt_{{ loop.index }}" {% if job_type_filter == jt %}checked{% endif %}
-                  onchange="this.form.submit()">
-                <label class="form-check-label small" for="jt_{{ loop.index }}">{{ jt }}</label>
-              </div>
-              {% endfor %}
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="job_type" value=""
-                  id="jt_all" {% if not job_type_filter %}checked{% endif %}
-                  onchange="this.form.submit()">
-                <label class="form-check-label small" for="jt_all">All Types</label>
+              <div class="filter-group">
+                <p class="filter-label">Job Type</p>
+                {% for jt in ['Full Time','Part Time','Online','School Leaver'] %}
+                <div class="form-check custom-check">
+                  <input class="form-check-input" type="radio" name="job_type" value="{{ jt }}"
+                    id="jt_{{ loop.index }}" {% if job_type_filter == jt %}checked{% endif %}
+                    onchange="this.form.submit()">
+                  <label class="form-check-label" for="jt_{{ loop.index }}">{{ jt }}</label>
+                </div>
+                {% endfor %}
+                <div class="form-check custom-check">
+                  <input class="form-check-input" type="radio" name="job_type" value=""
+                    id="jt_all" {% if not job_type_filter %}checked{% endif %}
+                    onchange="this.form.submit()">
+                  <label class="form-check-label" for="jt_all">All Types</label>
+                </div>
               </div>
 
-              <hr>
-              <p class="fw-semibold mb-1 small">Category</p>
-              {% for cat in categories %}
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" value="{{ cat.Description }}"
-                  id="cat_{{ loop.index }}" {% if category_filter == cat.Description %}checked{% endif %}
-                  onchange="this.form.submit()">
-                <label class="form-check-label small" for="cat_{{ loop.index }}">{{ cat.Description }}</label>
-              </div>
-              {% endfor %}
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="category" value=""
-                  id="cat_all" {% if not category_filter %}checked{% endif %}
-                  onchange="this.form.submit()">
-                <label class="form-check-label small" for="cat_all">All Categories</label>
+              <div class="filter-divider"></div>
+
+              <div class="filter-group">
+                <p class="filter-label">Category</p>
+                {% for cat in categories %}
+                <div class="form-check custom-check">
+                  <input class="form-check-input" type="radio" name="category" value="{{ cat.Description }}"
+                    id="cat_{{ loop.index }}" {% if category_filter == cat.Description %}checked{% endif %}
+                    onchange="this.form.submit()">
+                  <label class="form-check-label" for="cat_{{ loop.index }}">{{ cat.Description }}</label>
+                </div>
+                {% endfor %}
+                <div class="form-check custom-check">
+                  <input class="form-check-input" type="radio" name="category" value=""
+                    id="cat_all" {% if not category_filter %}checked{% endif %}
+                    onchange="this.form.submit()">
+                  <label class="form-check-label" for="cat_all">All Categories</label>
+                </div>
               </div>
             </form>
           </div>
@@ -150,11 +157,19 @@
       </div>
 
       <!-- Job Listings -->
-      <div class="col-md-9">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h5 class="mb-0 fw-bold">{{ jobs|length }} Job{{ 's' if jobs|length != 1 }} Found</h5>
+      <div class="col-lg-9">
+        <div class="d-flex justify-content-between align-items-center mb-4" data-aos="fade-up">
+          <div>
+            <h5 class="fw-bold mb-0">
+              <span class="gradient-text">{{ jobs|length }}</span>
+              Job{{ 's' if jobs|length != 1 }} Found
+            </h5>
+            {% if keyword or district_filter or city_filter or category_filter or job_type_filter %}
+            <span class="text-muted small">Filtered results</span>
+            {% endif %}
+          </div>
           {% if keyword or district_filter or city_filter or category_filter or job_type_filter %}
-          <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline-secondary">
+          <a href="{{ url_for('main.index') }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">
             <i class="fas fa-times me-1"></i>Clear Filters
           </a>
           {% endif %}
@@ -162,45 +177,79 @@
 
         {% if jobs %}
           {% for job in jobs %}
-          <div class="card mb-3 shadow-sm border-0 job-card">
-            <div class="card-body">
-              <div class="row align-items-center">
-                <div class="col-md-8">
-                  <h6 class="mb-1 fw-bold">
-                    <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="text-decoration-none text-dark">
-                      {{ job.Job_role }}
-                    </a>
+          <div class="job-card" data-aos="fade-up" data-aos-delay="{{ loop.index0 * 50 if loop.index0 < 6 else 0 }}">
+            <div class="job-card-body">
+              <div class="job-card-left">
+                <div class="job-logo-placeholder">
+                  {{ job.Job_role[0] | upper }}
+                </div>
+                <div class="job-info">
+                  <h6 class="job-title">
+                    <a href="{{ url_for('main.job_details', job_id=job.id) }}">{{ job.Job_role }}</a>
                   </h6>
-                  <div class="text-muted small">
-                    <span class="me-2"><i class="fas fa-map-marker-alt me-1"></i>{{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}</span>
-                    <span class="me-2"><i class="fas fa-tag me-1"></i>{{ job.Job_category }}</span>
-                    <span><i class="fas fa-eye me-1"></i>{{ job.views or 0 }} views</span>
+                  <div class="job-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> {{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}</span>
+                    <span><i class="fas fa-tag"></i> {{ job.Job_category }}</span>
+                    <span><i class="fas fa-eye"></i> {{ job.views or 0 }} views</span>
                   </div>
                 </div>
-                <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                  <span class="badge bg-{{ 'success' if job.job_type == 'Full Time' else 'info' if job.job_type == 'Part Time' else 'warning' if job.job_type == 'Online' else 'secondary' }} mb-1">
-                    {{ job.job_type }}
-                  </span>
-                  <div class="small text-muted">Closes: {{ job.Closing_date.strftime('%d %b %Y') if job.Closing_date else 'N/A' }}</div>
-                  <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-sm btn-primary mt-1">
-                    View & Apply
-                  </a>
+              </div>
+              <div class="job-card-right">
+                <span class="job-type-badge job-type-{{ job.job_type | lower | replace(' ','-') }}">
+                  {{ job.job_type }}
+                </span>
+                <div class="job-closing">
+                  <i class="far fa-clock me-1"></i>
+                  Closes {{ job.Closing_date.strftime('%d %b %Y') if job.Closing_date else 'N/A' }}
                 </div>
+                <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn-apply-now">
+                  View & Apply <i class="fas fa-arrow-right ms-1"></i>
+                </a>
               </div>
             </div>
           </div>
           {% endfor %}
         {% else %}
-          <div class="text-center py-5 text-muted">
-            <i class="fas fa-search fa-3x mb-3"></i>
+          <div class="empty-state" data-aos="fade-up">
+            <div class="empty-icon"><i class="fas fa-search"></i></div>
             <h5>No jobs found</h5>
-            <p>Try adjusting your search filters.</p>
+            <p>Try adjusting your search filters or check back later for new postings.</p>
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary-grad mt-2">Browse All Jobs</a>
           </div>
         {% endif %}
       </div>
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════ EMPLOYER CTA ═══════════════════ -->
+<section class="cta-section" data-aos="fade-up">
+  <div class="container">
+    <div class="cta-card">
+      <div class="cta-blob"></div>
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <div class="cta-eyebrow">For Employers</div>
+          <h2 class="cta-title">Find the Perfect Candidate <span class="gradient-text">Faster</span></h2>
+          <p class="cta-subtitle">Post jobs, browse our verified talent pool, use AI-powered CV scoring, and reach thousands of qualified candidates across Sri Lanka.</p>
+          <div class="cta-features">
+            <span><i class="fas fa-check-circle"></i> AI CV Scoring</span>
+            <span><i class="fas fa-check-circle"></i> SMS Notifications</span>
+            <span><i class="fas fa-check-circle"></i> Talent Pool Access</span>
+            <span><i class="fas fa-check-circle"></i> Paper Advertising</span>
+          </div>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <a href="{{ url_for('auth.register') }}" class="btn btn-primary-grad btn-lg px-5 py-3 mb-2 d-block d-lg-inline-block">
+            <i class="fas fa-rocket me-2"></i>Post a Job Free
+          </a>
+          <div class="cta-note">No credit card required</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock %}
 
 {% block scripts %}

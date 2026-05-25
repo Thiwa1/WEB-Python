@@ -1,44 +1,74 @@
 {% extends 'layout/base.html' %}
 {% block title %}Paper Advertising – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 text-center">
-      <i class="fas fa-newspaper text-success fa-4x mb-3"></i>
-      <h2 class="fw-bold">Newspaper Advertising</h2>
-      <p class="lead text-muted">Reach candidates beyond digital — place your job ad in leading newspapers.</p>
-      <div class="row g-3 my-4 text-start">
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm h-100 p-3 text-center">
-            <i class="fas fa-pen-nib text-primary fa-2x mb-2"></i>
-            <h6 class="fw-bold">Submit Ad Text</h6>
-            <p class="small text-muted">Write your ad content and we'll format it for publication.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm h-100 p-3 text-center">
-            <i class="fas fa-money-check-alt text-warning fa-2x mb-2"></i>
-            <h6 class="fw-bold">Pay Online</h6>
-            <p class="small text-muted">Upload payment slip for quick processing.</p>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card border-0 shadow-sm h-100 p-3 text-center">
-            <i class="fas fa-check-circle text-success fa-2x mb-2"></i>
-            <h6 class="fw-bold">Get Published</h6>
-            <p class="small text-muted">Our team reviews and publishes in the next available edition.</p>
-          </div>
+
+<section class="page-header-section">
+  <div class="container">
+    <div class="page-header-content" data-aos="fade-up">
+      <h1 class="page-header-title">Newspaper <span class="gradient-text">Advertising</span></h1>
+      <p class="page-header-subtitle">Reach candidates beyond digital — place your job ad in Sri Lanka's leading newspapers and expand your talent search.</p>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+
+    <!-- How It Works -->
+    <div class="text-center mb-5" data-aos="fade-up">
+      <h2 class="fw-bold mb-1">How It <span class="gradient-text">Works</span></h2>
+      <p class="text-muted">Three simple steps to publish your newspaper ad</p>
+    </div>
+
+    <div class="row g-4 mb-5">
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+        <div class="how-it-works-card">
+          <div class="how-step-num">1</div>
+          <div class="how-step-icon"><i class="fas fa-pen-nib"></i></div>
+          <h6 class="fw-bold mb-2">Write Your Ad</h6>
+          <p class="text-muted small mb-0">Craft your ad content with key details — role, requirements, and contact info. Our team will format it for publication.</p>
         </div>
       </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="how-it-works-card">
+          <div class="how-step-num">2</div>
+          <div class="how-step-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><i class="fas fa-money-check-alt"></i></div>
+          <h6 class="fw-bold mb-2">Upload Payment</h6>
+          <p class="text-muted small mb-0">Transfer the ad fee to our bank account and upload your payment slip for quick processing.</p>
+        </div>
+      </div>
+      <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="how-it-works-card">
+          <div class="how-step-num">3</div>
+          <div class="how-step-icon" style="background:linear-gradient(135deg,#10b981,#059669);"><i class="fas fa-check-circle"></i></div>
+          <h6 class="fw-bold mb-2">Get Published</h6>
+          <p class="text-muted small mb-0">Our team reviews and publishes your ad in the next available newspaper edition.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-card text-center py-5" data-aos="fade-up">
+      <div class="cta-blob"></div>
+      <i class="fas fa-newspaper fa-3x mb-3" style="color:var(--brand-1);"></i>
+      <h3 class="fw-bold mb-2">Ready to Advertise?</h3>
+      <p class="text-muted mb-4">Log in as an employer to submit your newspaper ad request</p>
       {% if session.user_id and session.user_type | lower == 'employer' %}
-      <a href="{{ url_for('employer.submit_paper_ad') }}" class="btn btn-success btn-lg fw-bold">
+      <a href="{{ url_for('employer.submit_paper_ad') }}" class="btn btn-primary-grad btn-lg px-5">
         <i class="fas fa-plus me-2"></i>Submit a Paper Ad
       </a>
       {% else %}
-      <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg fw-bold me-2">Register as Employer</a>
-      <a href="{{ url_for('auth.login') }}" class="btn btn-outline-primary btn-lg">Login</a>
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <a href="{{ url_for('auth.register') }}" class="btn btn-primary-grad btn-lg px-5">
+          <i class="fas fa-rocket me-2"></i>Register as Employer
+        </a>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline-secondary btn-lg px-5 rounded-pill">
+          <i class="fas fa-sign-in-alt me-2"></i>Login
+        </a>
+      </div>
       {% endif %}
     </div>
+
   </div>
-</div>
+</section>
 {% endblock %}

@@ -1,55 +1,68 @@
 {% extends 'layout/base.html' %}
 {% block title %}Apply – {{ job.Job_role }} – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="row justify-content-center">
-    <div class="col-md-7">
-      <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Guest Application</h5>
-          <small>{{ job.Job_role }} – {{ job.District }}</small>
+<div class="auth-page">
+  <div class="auth-blob auth-blob-1"></div>
+  <div class="auth-blob auth-blob-2"></div>
+  <div class="auth-card-wrap" data-aos="fade-up">
+    <div class="auth-card auth-card-wide">
+      <div class="auth-card-header">
+        <div class="auth-logo">
+          <div class="brand-icon brand-icon-lg"><i class="fas fa-paper-plane"></i></div>
         </div>
-        <div class="card-body p-4">
-          <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Full Name *</label>
-              <input type="text" name="guest_full_name" class="form-control" required>
-            </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Contact Number *</label>
-                <input type="tel" name="guest_contact_no" class="form-control" required>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label class="form-label fw-semibold">Gender *</label>
-                <select name="guest_gender" class="form-select" required>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">CV / Resume * <small class="text-muted">(PDF, DOC, DOCX)</small></label>
-              <input type="file" name="guest_cv" class="form-control" accept=".pdf,.doc,.docx" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Cover Letter <small class="text-muted">(optional)</small></label>
-              <input type="file" name="guest_cover_letter" class="form-control" accept=".pdf,.doc,.docx">
-            </div>
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary fw-bold">
-                <i class="fas fa-paper-plane me-2"></i>Submit Application
-              </button>
-              <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-outline-secondary">Cancel</a>
-            </div>
-          </form>
-          <hr>
-          <p class="text-center text-muted small">
-            Have an account? <a href="{{ url_for('auth.login') }}">Login for faster applications</a>
-          </p>
-        </div>
+        <h2 class="auth-title">Guest Application</h2>
+        <p class="auth-subtitle">
+          <strong>{{ job.Job_role }}</strong> · {{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}
+        </p>
       </div>
+
+      <form method="POST" enctype="multipart/form-data" class="auth-form">
+        <div class="input-icon-wrap">
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" name="guest_full_name" class="form-control auth-input" placeholder="Full name" required>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="input-icon-wrap">
+              <i class="fas fa-phone input-icon"></i>
+              <input type="tel" name="guest_contact_no" class="form-control auth-input" placeholder="Contact number" required>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-icon-wrap">
+              <i class="fas fa-venus-mars input-icon"></i>
+              <select name="guest_gender" class="form-control auth-input" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-icon-wrap">
+          <i class="fas fa-file-pdf input-icon"></i>
+          <input type="file" name="guest_cv" class="form-control auth-input" accept=".pdf,.doc,.docx" required>
+        </div>
+        <div class="small text-muted mb-3" style="margin-top:-12px;padding-left:48px;">CV / Resume (PDF, DOC, DOCX) *</div>
+
+        <div class="input-icon-wrap">
+          <i class="fas fa-file-alt input-icon"></i>
+          <input type="file" name="guest_cover_letter" class="form-control auth-input" accept=".pdf,.doc,.docx">
+        </div>
+        <div class="small text-muted mb-4" style="margin-top:-12px;padding-left:48px;">Cover letter (optional)</div>
+
+        <button type="submit" class="btn btn-primary-grad w-100 btn-auth-submit">
+          <i class="fas fa-paper-plane me-2"></i>Submit Application
+        </button>
+        <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-outline-secondary w-100 mt-2 rounded-pill">Cancel</a>
+      </form>
+
+      <p class="auth-footer-text">
+        Have an account?
+        <a href="{{ url_for('auth.login') }}" class="auth-link fw-semibold">Login for faster applications</a>
+      </p>
     </div>
   </div>
 </div>

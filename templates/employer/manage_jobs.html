@@ -1,48 +1,88 @@
 {% extends 'layout/base.html' %}
 {% block title %}Manage Jobs – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container py-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0"><i class="fas fa-list me-2 text-primary"></i>My Job Postings</h4>
-    <a href="{{ url_for('employer.post_job') }}" class="btn btn-primary"><i class="fas fa-plus me-2"></i>Post New Job</a>
-  </div>
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr><th>Title</th><th>Type</th><th>Location</th><th>Closes</th><th>Status</th><th>Views</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-          {% for job in jobs %}
-            <tr>
-              <td class="fw-semibold">{{ job.Job_role }}</td>
-              <td><span class="badge bg-secondary">{{ job.job_type }}</span></td>
-              <td>{{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}</td>
-              <td>{{ job.Closing_date.strftime('%d %b %Y') if job.Closing_date else '–' }}</td>
-              <td>
-                {% if job.Approved %}<span class="badge bg-success">Live</span>
-                {% elif job.rejection_reason %}<span class="badge bg-danger" title="{{ job.rejection_reason }}">Rejected</span>
-                {% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}
-              </td>
-              <td>{{ job.views or 0 }}</td>
-              <td>
-                <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-sm btn-outline-info me-1" title="Preview"><i class="fas fa-eye"></i></a>
-                <a href="{{ url_for('employer.view_applications', job_id=job.id) }}" class="btn btn-sm btn-outline-primary me-1" title="Applications"><i class="fas fa-users"></i></a>
-                <a href="{{ url_for('employer.edit_job', job_id=job.id) }}" class="btn btn-sm btn-outline-secondary me-1" title="Edit"><i class="fas fa-edit"></i></a>
-                <form method="POST" action="{{ url_for('employer.delete_job', job_id=job.id) }}" class="d-inline"
-                      onsubmit="return confirm('Delete this job?')">
-                  <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
-                </form>
-              </td>
-            </tr>
-          {% else %}
-            <tr><td colspan="7" class="text-center text-muted py-4">No jobs yet. <a href="{{ url_for('employer.post_job') }}">Post one now</a></td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
+    </div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Employer</div>
       </div>
     </div>
-  </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employer.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('employer.post_job') }}" class="sidebar-link"><i class="fas fa-plus-circle"></i><span>Post a Job</span></a>
+      <a href="{{ url_for('employer.manage_jobs') }}" class="sidebar-link active"><i class="fas fa-list-alt"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('employer.talent_pool') }}" class="sidebar-link"><i class="fas fa-users"></i><span>Talent Pool</span></a>
+      <a href="{{ url_for('employer.profile') }}" class="sidebar-link"><i class="fas fa-building"></i><span>Company Profile</span></a>
+      <a href="{{ url_for('employer.billing') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Billing</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">My Job Postings</h4>
+        <p class="dash-page-sub">{{ jobs|length }} job{{ 's' if jobs|length != 1 }}</p>
+      </div>
+      <a href="{{ url_for('employer.post_job') }}" class="btn btn-primary-grad">
+        <i class="fas fa-plus me-2"></i>Post New Job
+      </a>
+    </div>
+
+    <div class="dash-card" data-aos="fade-up">
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr><th>Title</th><th>Type</th><th>Location</th><th>Closes</th><th>Status</th><th>Views</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            {% for job in jobs %}
+              <tr>
+                <td class="fw-semibold">{{ job.Job_role }}</td>
+                <td><span class="status-badge status-info">{{ job.job_type }}</span></td>
+                <td>{{ job.District }}{% if job.City %}, {{ job.City }}{% endif %}</td>
+                <td>{{ job.Closing_date.strftime('%d %b %Y') if job.Closing_date else '–' }}</td>
+                <td>
+                  {% if job.Approved %}
+                    <span class="status-badge status-success">Live</span>
+                  {% elif job.rejection_reason %}
+                    <span class="status-badge status-danger" title="{{ job.rejection_reason }}">Rejected</span>
+                  {% else %}
+                    <span class="status-badge status-warning">Pending</span>
+                  {% endif %}
+                </td>
+                <td><span class="fw-semibold">{{ job.views or 0 }}</span></td>
+                <td>
+                  <div class="d-flex gap-1">
+                    <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="btn btn-sm btn-outline-info" title="Preview"><i class="fas fa-eye"></i></a>
+                    <a href="{{ url_for('employer.view_applications', job_id=job.id) }}" class="btn btn-sm btn-outline-primary" title="Applications"><i class="fas fa-users"></i></a>
+                    <a href="{{ url_for('employer.edit_job', job_id=job.id) }}" class="btn btn-sm btn-outline-secondary" title="Edit"><i class="fas fa-edit"></i></a>
+                    <form method="POST" action="{{ url_for('employer.delete_job', job_id=job.id) }}" class="d-inline"
+                          onsubmit="return confirm('Delete this job?')">
+                      <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="fas fa-trash"></i></button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="7" class="text-center py-5 text-muted">
+                No jobs posted yet. <a href="{{ url_for('employer.post_job') }}" class="text-primary">Post your first job →</a>
+              </td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>
 {% endblock %}

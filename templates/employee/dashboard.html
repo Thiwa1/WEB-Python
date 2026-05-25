@@ -1,104 +1,163 @@
 {% extends 'layout/base.html' %}
-{% block title %}Job Seeker Dashboard – JobPortal Pro{% endblock %}
+{% block title %}My Dashboard – JobPortal Pro{% endblock %}
 {% block content %}
-<div class="container-fluid py-4 px-4">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold mb-0"><i class="fas fa-tachometer-alt me-2 text-primary"></i>My Dashboard</h4>
-    <a href="{{ url_for('employee.browse_jobs') }}" class="btn btn-primary">
-      <i class="fas fa-search me-2"></i>Browse Jobs
-    </a>
-  </div>
+<div class="dashboard-wrapper">
 
-  <!-- Profile Completion Banner -->
-  {% if not profile.cv_path %}
-  <div class="alert alert-warning d-flex align-items-center gap-2 mb-4">
-    <i class="fas fa-exclamation-triangle fa-lg"></i>
-    <div>Complete your profile for faster applications.
-      <a href="{{ url_for('employee.edit_profile') }}" class="alert-link ms-2">Upload CV now →</a>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div>
+      <span>JobPortal <strong>Pro</strong></span>
     </div>
-  </div>
-  {% endif %}
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">{{ session.full_name[0] | upper }}</div>
+      <div>
+        <div class="sidebar-user-name">{{ session.full_name }}</div>
+        <div class="sidebar-user-role">Job Seeker</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('employee.dashboard') }}" class="sidebar-link active">
+        <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('employee.browse_jobs') }}" class="sidebar-link">
+        <i class="fas fa-search"></i><span>Browse Jobs</span>
+      </a>
+      <a href="{{ url_for('employee.my_applications') }}" class="sidebar-link">
+        <i class="fas fa-file-alt"></i><span>My Applications</span>
+      </a>
+      <a href="{{ url_for('employee.edit_profile') }}" class="sidebar-link">
+        <i class="fas fa-user-edit"></i><span>Edit Profile</span>
+      </a>
+      <a href="{{ url_for('employee.manage_documents') }}" class="sidebar-link">
+        <i class="fas fa-folder-open"></i><span>My Documents</span>
+      </a>
+      <a href="{{ url_for('employee.alert_settings') }}" class="sidebar-link">
+        <i class="fas fa-bell"></i><span>Job Alerts</span>
+      </a>
+      <a href="{{ url_for('employee.promote_self') }}" class="sidebar-link">
+        <i class="fas fa-star"></i><span>Promote Myself</span>
+      </a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('main.index') }}" class="sidebar-link">
+        <i class="fas fa-globe"></i><span>Browse Site</span>
+      </a>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </a>
+    </nav>
+  </aside>
 
-  <!-- Stats -->
-  <div class="row g-3 mb-4">
-    {% for label, val, icon, color in [
-        ('Applications Sent', applications|length, 'fa-paper-plane', 'primary'),
-        ('Active Jobs', active_jobs_count, 'fa-briefcase', 'success'),
-        ('Documents', '–', 'fa-folder', 'info'),
-        ('Talent Profile', 'Live' if talent_offer else 'Not set', 'fa-star', 'warning')] %}
-    <div class="col-6 col-md-3">
-      <div class="card border-0 shadow-sm h-100">
-        <div class="card-body d-flex align-items-center gap-3">
-          <div class="rounded-circle bg-{{ color }} bg-opacity-10 p-3">
-            <i class="fas {{ icon }} text-{{ color }} fa-lg"></i>
-          </div>
-          <div>
-            <div class="fs-4 fw-bold">{{ val }}</div>
-            <div class="small text-muted">{{ label }}</div>
-          </div>
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div>
+        <h4 class="dash-page-title">My Dashboard</h4>
+        <p class="dash-page-sub">Welcome back, {{ session.full_name }}!</p>
+      </div>
+      <a href="{{ url_for('employee.browse_jobs') }}" class="btn btn-primary-grad">
+        <i class="fas fa-search me-2"></i>Browse Jobs
+      </a>
+    </div>
+
+    <!-- Profile Completion Banner -->
+    {% if not profile.cv_path %}
+    <div class="alert-banner alert-banner-warning mb-4" data-aos="fade-up">
+      <i class="fas fa-exclamation-triangle fa-lg"></i>
+      <div>
+        <strong>Complete your profile</strong> — upload your CV for faster one-click applications.
+        <a href="{{ url_for('employee.edit_profile') }}" class="ms-2 fw-semibold">Upload CV now →</a>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid" data-aos="fade-up">
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-purple"><i class="fas fa-paper-plane"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ applications|length }}</div>
+          <div class="kpi-label">Applications Sent</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-green"><i class="fas fa-briefcase"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ active_jobs_count }}</div>
+          <div class="kpi-label">Active Jobs</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-blue"><i class="fas fa-folder"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ profile.cv_path | default('–', true) | replace(profile.cv_path or '', '1') }}</div>
+          <div class="kpi-label">Documents</div>
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon kpi-icon-yellow"><i class="fas fa-star"></i></div>
+        <div class="kpi-info">
+          <div class="kpi-value">{{ 'Live' if talent_offer else 'Off' }}</div>
+          <div class="kpi-label">Talent Profile</div>
         </div>
       </div>
     </div>
-    {% endfor %}
-  </div>
 
-  <!-- Quick Links -->
-  <div class="row g-3 mb-4">
-    {% for label, url, icon, color in [
-        ('Browse Jobs', url_for('employee.browse_jobs'), 'fa-search', 'primary'),
-        ('My Applications', url_for('employee.my_applications'), 'fa-file-alt', 'info'),
-        ('Edit Profile', url_for('employee.edit_profile'), 'fa-user-edit', 'secondary'),
-        ('My Documents', url_for('employee.manage_documents'), 'fa-folder-open', 'warning'),
-        ('Job Alerts', url_for('employee.alert_settings'), 'fa-bell', 'success'),
-        ('Promote Myself', url_for('employee.promote_self'), 'fa-star', 'danger')] %}
-    <div class="col-6 col-md-2">
-      <a href="{{ url }}" class="card border-0 shadow-sm text-decoration-none text-center p-3 h-100 d-flex flex-column align-items-center justify-content-center">
-        <i class="fas {{ icon }} text-{{ color }} fa-2x mb-2"></i>
-        <span class="small fw-semibold text-dark">{{ label }}</span>
+    <!-- Quick Actions -->
+    <div class="quick-actions-grid mb-4" data-aos="fade-up" data-aos-delay="100">
+      {% for label, url, icon in [
+          ('Browse Jobs', url_for('employee.browse_jobs'), 'fa-search'),
+          ('My Applications', url_for('employee.my_applications'), 'fa-file-alt'),
+          ('Edit Profile', url_for('employee.edit_profile'), 'fa-user-edit'),
+          ('My Documents', url_for('employee.manage_documents'), 'fa-folder-open'),
+          ('Job Alerts', url_for('employee.alert_settings'), 'fa-bell'),
+          ('Promote Myself', url_for('employee.promote_self'), 'fa-star')] %}
+      <a href="{{ url }}" class="quick-action-card">
+        <i class="fas {{ icon }}"></i>
+        <span>{{ label }}</span>
       </a>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
 
-  <!-- Recent Applications -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-header bg-white fw-bold border-0">
-      <i class="fas fa-paper-plane me-2 text-primary"></i>Recent Applications
-    </div>
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover mb-0 align-middle">
-          <thead class="table-light">
-            <tr><th>Job Title</th><th>Company District</th><th>Applied</th><th>Status</th></tr>
-          </thead>
-          <tbody>
-          {% for app, job in applications %}
-            <tr>
-              <td class="fw-semibold">
-                <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="text-decoration-none">{{ job.Job_role }}</a>
-              </td>
-              <td>{{ job.District }}</td>
-              <td>{{ app.applied_date.strftime('%d %b %Y') if app.applied_date else '–' }}</td>
-              <td>
-                <span class="badge bg-{{ 'success' if app.application_status=='Accepted' else 'danger' if app.application_status=='Rejected' else 'warning text-dark' if app.application_status=='Shortlisted' else 'secondary' }}">
-                  {{ app.application_status }}
-                </span>
-              </td>
-            </tr>
-          {% else %}
-            <tr><td colspan="4" class="text-center text-muted py-4">
-              No applications yet. <a href="{{ url_for('employee.browse_jobs') }}">Browse jobs</a>
-            </td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
+    <!-- Recent Applications -->
+    <div class="dash-card" data-aos="fade-up" data-aos-delay="150">
+      <div class="dash-card-header">
+        <span><i class="fas fa-paper-plane me-2"></i>Recent Applications</span>
+        {% if applications %}
+        <a href="{{ url_for('employee.my_applications') }}" class="btn btn-sm btn-outline-secondary rounded-pill">View All</a>
+        {% endif %}
+      </div>
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr><th>Job Title</th><th>District</th><th>Applied</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+            {% for app, job in applications %}
+              <tr>
+                <td class="fw-semibold">
+                  <a href="{{ url_for('main.job_details', job_id=job.id) }}" class="text-decoration-none">{{ job.Job_role }}</a>
+                </td>
+                <td>{{ job.District }}</td>
+                <td>{{ app.applied_date.strftime('%d %b %Y') if app.applied_date else '–' }}</td>
+                <td>
+                  {% set s = app.application_status %}
+                  <span class="status-badge status-{{ 'success' if s=='Accepted' else 'danger' if s=='Rejected' else 'warning' if s=='Shortlisted' else 'info' }}">
+                    {{ s }}
+                  </span>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4" class="text-center py-5 text-muted">
+                No applications yet. <a href="{{ url_for('employee.browse_jobs') }}" class="text-primary">Browse jobs →</a>
+              </td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-    {% if applications %}
-    <div class="card-footer bg-white text-end">
-      <a href="{{ url_for('employee.my_applications') }}" class="btn btn-sm btn-outline-primary">View All →</a>
-    </div>
-    {% endif %}
-  </div>
+  </main>
 </div>
 {% endblock %}

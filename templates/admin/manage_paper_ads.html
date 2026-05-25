@@ -1,53 +1,81 @@
 {% extends 'layout/base.html' %}
-{% block title %}Manage Paper Ads – Admin{% endblock %}
+{% block title %}Paper Ads – Admin{% endblock %}
 {% block content %}
-<div class="container-fluid py-4 px-4">
-  <h4 class="fw-bold mb-4"><i class="fas fa-newspaper me-2 text-info"></i>Paper Ads Management</h4>
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-0">
-      <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light">
-            <tr><th>#</th><th>Employer</th><th>Ad Text</th><th>Contact</th><th>Slip</th><th>Status</th><th>Submitted</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-          {% for ad, employer, user in ads %}
-            <tr>
-              <td>{{ ad.id }}</td>
-              <td class="fw-semibold">{{ employer.employer_name or user.full_name }}</td>
-              <td style="max-width:250px;">
-                <div class="text-truncate small" title="{{ ad.ad_text }}">{{ ad.ad_text[:80] }}{% if ad.ad_text|length > 80 %}…{% endif %}</div>
-              </td>
-              <td class="small">{{ ad.contact_info or '–' }}</td>
-              <td>
-                {% if ad.slip_path %}
-                <a href="{{ url_for('static', filename=ad.slip_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary"><i class="fas fa-image"></i></a>
-                {% else %}–{% endif %}
-              </td>
-              <td>
-                <span class="badge bg-{{ 'success' if ad.status=='Approved' else 'danger' if ad.status=='Rejected' else 'warning text-dark' }}">
-                  {{ ad.status }}
-                </span>
-              </td>
-              <td class="small">{{ ad.submitted_at.strftime('%d %b %Y') if ad.submitted_at else '–' }}</td>
-              <td>
-                {% if ad.status == 'Pending' %}
-                <form method="POST" action="{{ url_for('admin.approve_paper_ad', ad_id=ad.id) }}" class="d-inline">
-                  <button class="btn btn-sm btn-success me-1"><i class="fas fa-check"></i></button>
-                </form>
-                <form method="POST" action="{{ url_for('admin.reject_paper_ad', ad_id=ad.id) }}" class="d-inline">
-                  <button class="btn btn-sm btn-danger"><i class="fas fa-times"></i></button>
-                </form>
-                {% endif %}
-              </td>
-            </tr>
-          {% else %}
-            <tr><td colspan="8" class="text-center text-muted py-4">No paper ads submitted yet.</td></tr>
-          {% endfor %}
-          </tbody>
-        </table>
+<div class="dashboard-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand"><div class="brand-icon brand-icon-sm"><i class="fas fa-briefcase"></i></div><span>JobPortal <strong>Pro</strong></span></div>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626);"><i class="fas fa-shield-alt" style="font-size:.9rem;"></i></div>
+      <div><div class="sidebar-user-name">{{ session.full_name }}</div><div class="sidebar-user-role">Administrator</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="{{ url_for('admin.dashboard') }}" class="sidebar-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+      <a href="{{ url_for('admin.manage_jobs') }}" class="sidebar-link"><i class="fas fa-briefcase"></i><span>Manage Jobs</span></a>
+      <a href="{{ url_for('admin.approve_payments') }}" class="sidebar-link"><i class="fas fa-credit-card"></i><span>Approve Payments</span></a>
+      <a href="{{ url_for('admin.verify_recruiters') }}" class="sidebar-link"><i class="fas fa-check-double"></i><span>Verify Employers</span></a>
+      <a href="{{ url_for('admin.paper_ads') }}" class="sidebar-link active"><i class="fas fa-newspaper"></i><span>Paper Ads</span></a>
+      <a href="{{ url_for('admin.revenue_report') }}" class="sidebar-link"><i class="fas fa-chart-bar"></i><span>Revenue</span></a>
+      <a href="{{ url_for('admin.sms_panel') }}" class="sidebar-link"><i class="fas fa-sms"></i><span>SMS Panel</span></a>
+      <a href="{{ url_for('admin.manage_categories') }}" class="sidebar-link"><i class="fas fa-tags"></i><span>Categories</span></a>
+      <a href="{{ url_for('admin.settings') }}" class="sidebar-link"><i class="fas fa-cog"></i><span>Settings</span></a>
+      <div class="sidebar-divider"></div>
+      <a href="{{ url_for('auth.logout') }}" class="sidebar-link text-danger-soft"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+    </nav>
+  </aside>
+  <main class="dashboard-main">
+    <div class="dash-topbar">
+      <div><h4 class="dash-page-title">Paper Ads Management</h4><p class="dash-page-sub">Review and approve newspaper advertising requests</p></div>
+    </div>
+    <div class="dash-card" data-aos="fade-up">
+      <div class="dash-card-body p-0">
+        <div class="table-responsive">
+          <table class="dash-table">
+            <thead>
+              <tr><th>#</th><th>Employer</th><th>Ad Text</th><th>Contact</th><th>Slip</th><th>Status</th><th>Submitted</th><th>Actions</th></tr>
+            </thead>
+            <tbody>
+            {% for ad, employer, user in ads %}
+              <tr>
+                <td class="text-muted small">{{ ad.id }}</td>
+                <td class="fw-semibold">{{ employer.employer_name or user.full_name }}</td>
+                <td style="max-width:220px;">
+                  <div class="text-truncate small" title="{{ ad.ad_text }}">{{ ad.ad_text[:70] }}{% if ad.ad_text|length > 70 %}…{% endif %}</div>
+                </td>
+                <td class="small">{{ ad.contact_info or '–' }}</td>
+                <td>
+                  {% if ad.slip_path %}
+                  <a href="{{ url_for('static', filename=ad.slip_path) }}" target="_blank" class="btn btn-sm btn-outline-secondary rounded-pill">
+                    <i class="fas fa-image me-1"></i>View
+                  </a>
+                  {% else %}–{% endif %}
+                </td>
+                <td>
+                  <span class="status-badge {{ 'status-success' if ad.status=='Approved' else 'status-danger' if ad.status=='Rejected' else 'status-warning' }}">
+                    {{ ad.status }}
+                  </span>
+                </td>
+                <td class="small">{{ ad.submitted_at.strftime('%d %b %Y') if ad.submitted_at else '–' }}</td>
+                <td>
+                  {% if ad.status == 'Pending' %}
+                  <div class="d-flex gap-1">
+                    <form method="POST" action="{{ url_for('admin.approve_paper_ad', ad_id=ad.id) }}" class="d-inline">
+                      <button class="btn btn-sm btn-success rounded-pill px-2" title="Approve"><i class="fas fa-check"></i></button>
+                    </form>
+                    <form method="POST" action="{{ url_for('admin.reject_paper_ad', ad_id=ad.id) }}" class="d-inline">
+                      <button class="btn btn-sm btn-danger rounded-pill px-2" title="Reject"><i class="fas fa-times"></i></button>
+                    </form>
+                  </div>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="8" class="text-center py-4 text-muted">No paper ads submitted yet.</td></tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 {% endblock %}
