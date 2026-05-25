@@ -6,8 +6,11 @@ load_dotenv()
 
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-change-in-prod')
+    # Flask-Session 0.5.0 (Python 3.8 compatible)
     SESSION_TYPE = 'filesystem'
     SESSION_FILE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'flask_session')
+    SESSION_USE_SIGNER = True
+    SESSION_PERMANENT = False
 
     # Database
     DB_HOST = os.environ.get('DB_HOST', 'localhost')

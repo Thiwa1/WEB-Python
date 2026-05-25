@@ -1,20 +1,12 @@
-# ---------------------------------------------------------------
-# cPanel Python App — Passenger routing for tiptopvacancies.com
-# NOTE: cPanel will PREPEND its own PassengerPython line above
-#       these rules when you click "Save" in Setup Python App.
-#       Do not delete that auto-generated line.
-# ---------------------------------------------------------------
+# NOTE: cPanel "Setup Python App" will auto-prepend the PassengerPython
+# and PassengerEnabled lines above this block. Do not remove them.
 
-PassengerEnabled on
-PassengerAppRoot /home/suwixvkn/public_html
-PassengerBaseURI /
-
-# Serve static files directly (bypasses Python for speed)
+# Serve static files directly without hitting Python
 RewriteEngine On
 RewriteCond %{REQUEST_URI} ^/static/
-RewriteRule ^static/(.*)$ /static/$1 [L]
+RewriteRule ^ - [L]
 
-# Send everything else to Passenger (Flask)
+# Route everything else through Passenger (Flask)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /passenger_wsgi.py/$1 [QSA,L]
+RewriteRule ^(.*)$ passenger_wsgi.py/$1 [QSA,L]
