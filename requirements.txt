@@ -8,9 +8,9 @@ SQLAlchemy==2.0.36
 Werkzeug==2.3.8
 python-dotenv==1.0.1
 requests==2.31.0
-google-auth==2.37.0
-google-auth-oauthlib==1.2.1
+google-auth==2.29.0
+google-auth-oauthlib==1.0.0
 Pillow==10.4.0
 itsdangerous==2.2.0
-bleach==6.2.0
+bleach==6.1.0
 cachelib==0.9.0
